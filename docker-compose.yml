@@ -48,13 +48,12 @@ services:
 
   owncloud:
     image: owncloud/server:${OWNCLOUD_VERSION}
-    container_name: ownclod
     restart: always
     expose:
       - 443
     depends_on:
-      - ownclouddb
-      - owncloudredis
+      - db
+      - redis
       - letsencrypt
     environment:
       - OWNCLOUD_DOMAIN=${OWNCLOUD_DOMAIN}
@@ -74,9 +73,8 @@ services:
     volumes:
       - files:/mnt/data
 
-  ownclouddb:
+  db:
     image: webhippie/mariadb:latest
-    container_name: owncloud-db
     restart: always
     environment:
       - MARIADB_ROOT_PASSWORD=owncloud
@@ -91,9 +89,8 @@ services:
       - mysql:/var/lib/mysql
       - backup:/var/lib/backup
 
-  owncloudredis:
+  redis:
     image: webhippie/redis:latest
-    container_name: owncloud-redis
     restart: always
     environment:
       - REDIS_DATABASES=1
