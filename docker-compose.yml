@@ -89,6 +89,22 @@ services:
       - mysql:/var/lib/mysql
       - backup:/var/lib/backup
 
+  sbfspotdb:
+    image: webhippie/mariadb:latest
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=owncloud
+      - MARIADB_USERNAME=${MARIADB_USERNAME}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_DATABASE=owncloud
+      - MARIADB_MAX_ALLOWED_PACKET=128M
+      - MARIADB_INNODB_LOG_FILE_SIZE=64M
+      - MARIADB_INNODB_LARGE_PREFIX=ON
+      - MARIADB_INNODB_FILE_FORMAT=Barracuda
+    volumes:
+      - mysql:/var/lib/mysql
+      - backup:/var/lib/backup
+
   redis:
     image: webhippie/redis:latest
     restart: always
