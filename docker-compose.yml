@@ -77,9 +77,9 @@ services:
     image: webhippie/mariadb:latest
     restart: always
     environment:
-      - MARIADB_ROOT_PASSWORD=owncloud
-      - MARIADB_USERNAME=${MARIADB_USERNAME}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD={DB_ROOT_PASSWORD}
+      - MARIADB_USERNAME=${OWNCLOUDDB_USERNAME}
+      - MARIADB_PASSWORD=${OWNCLOUDDB_PASSWORD}
       - MARIADB_DATABASE=owncloud
       - MARIADB_MAX_ALLOWED_PACKET=128M
       - MARIADB_INNODB_LOG_FILE_SIZE=64M
@@ -91,11 +91,12 @@ services:
 
   sbfspotdb:
     image: webhippie/mariadb:latest
+    container_name: sbfspot-db
     restart: always
     environment:
-      - MARIADB_ROOT_PASSWORD=owncloud
-      - MARIADB_USERNAME=${MARIADB_USERNAME}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD={DB_ROOT_PASSWORD}
+      - MARIADB_USERNAME=${SBFSPOTDB_USERNAME}
+      - MARIADB_PASSWORD=${SBFSPOTDB_PASSWORD}
       - MARIADB_DATABASE=owncloud
       - MARIADB_MAX_ALLOWED_PACKET=128M
       - MARIADB_INNODB_LOG_FILE_SIZE=64M
