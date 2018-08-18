@@ -76,10 +76,8 @@ services:
 
   db:
     image: webhippie/mariadb:latest
-    container_name: db
+    container_name: database
     restart: always
-    ports:
-      - "2056:3306"
     environment:
       - MARIADB_ROOT_PASSWORD={DB_ROOT_PASSWORD}
       - MARIADB_USERNAME=${OWNCLOUDDB_USERNAME}
