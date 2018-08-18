@@ -52,7 +52,7 @@ services:
     expose:
       - 443
     depends_on:
-      - db
+      - ownclouddb
       - redis
       - letsencrypt
     environment:
@@ -73,8 +73,9 @@ services:
     volumes:
       - files:/mnt/data
 
-  db:
+  ownclouddb:
     image: webhippie/mariadb:latest
+    container_name: owncloud-db
     restart: always
     environment:
       - MARIADB_ROOT_PASSWORD={DB_ROOT_PASSWORD}
@@ -93,11 +94,13 @@ services:
     image: webhippie/mariadb:latest
     container_name: sbfspot-db
     restart: always
+    ports:
+      - "3306:3306"
     environment:
       - MARIADB_ROOT_PASSWORD={DB_ROOT_PASSWORD}
       - MARIADB_USERNAME=${SBFSPOTDB_USERNAME}
       - MARIADB_PASSWORD=${SBFSPOTDB_PASSWORD}
-      - MARIADB_DATABASE=owncloud
+      - MARIADB_DATABASE=SBFspot
       - MARIADB_MAX_ALLOWED_PACKET=128M
       - MARIADB_INNODB_LOG_FILE_SIZE=64M
       - MARIADB_INNODB_LARGE_PREFIX=ON
