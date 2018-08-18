@@ -49,6 +49,7 @@ services:
   owncloud:
     image: owncloud/server:${OWNCLOUD_VERSION}
     restart: always
+    container_name: owncloud
     expose:
       - 443
     depends_on:
@@ -61,7 +62,7 @@ services:
       - OWNCLOUD_DB_NAME=owncloud
       - OWNCLOUD_DB_USERNAME=${OWNCLOUDDB_USERNAME}
       - OWNCLOUD_DB_PASSWORD=${OWNCLOUDDB_PASSWORD}
-      - OWNCLOUD_DB_HOST=db
+      - OWNCLOUD_DB_HOST=ownclouddb
       - OWNCLOUD_ADMIN_USERNAME=${ADMIN_USERNAME}
       - OWNCLOUD_ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - OWNCLOUD_UTF8MB4_ENABLED=true
@@ -111,6 +112,7 @@ services:
 
   redis:
     image: webhippie/redis:latest
+    container_name: owncloud-redis
     restart: always
     environment:
       - REDIS_DATABASES=1
