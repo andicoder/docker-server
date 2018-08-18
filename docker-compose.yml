@@ -53,7 +53,7 @@ services:
     expose:
       - 443
     depends_on:
-      - ownclouddb
+      - db
       - redis
       - letsencrypt
     environment:
@@ -62,7 +62,7 @@ services:
       - OWNCLOUD_DB_NAME=owncloud
       - OWNCLOUD_DB_USERNAME=${OWNCLOUDDB_USERNAME}
       - OWNCLOUD_DB_PASSWORD=${OWNCLOUDDB_PASSWORD}
-      - OWNCLOUD_DB_HOST=ownclouddb
+      - OWNCLOUD_DB_HOST=db
       - OWNCLOUD_ADMIN_USERNAME=${ADMIN_USERNAME}
       - OWNCLOUD_ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - OWNCLOUD_UTF8MB4_ENABLED=true
@@ -74,10 +74,12 @@ services:
     volumes:
       - files:/mnt/data
 
-  ownclouddb:
+  db:
     image: webhippie/mariadb:latest
-    container_name: owncloud-db
+    container_name: db
     restart: always
+    ports:
+      - "2056:3306"
     environment:
       - MARIADB_ROOT_PASSWORD={DB_ROOT_PASSWORD}
       - MARIADB_USERNAME=${OWNCLOUDDB_USERNAME}
