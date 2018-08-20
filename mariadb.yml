@@ -1,5 +1,6 @@
 version: '2'
 
+# connect with docker exec -i -t mariadb bas
 services:
   mariadb:
     image: mariadb
