@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  mariadb:
+    image: mariadb
+    restart: always
+    container_name: mariadb
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+volumes:
+      - files:/mnt/data
+
+volumes:
+  files:
+    driver: local
+  mysql:
+    driver: local
+  backup:
+    driver: local
+  redis:
+    driver: local
+  
+# Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.
+networks:
+  default:
+    external:
+      name: nginx-proxy
