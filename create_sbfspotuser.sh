@@ -1,0 +1,7 @@
+#!/bin/sh
+
+mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "CREATE USER '${SBFSPOT_USERNAME}'@'%' IDENTIFIED BY '${SBFSPOT_PASSWORD}'"
+mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT INSERT ON SBFspot.* TO '${SBFSPOT_USERNAME}'@'%'"
+mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT SELECT ON SBFspot.* TO '${SBFSPOT_USERNAME}'@'%'"
+mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT UPDATE ON SBFspot.* TO '${SBFSPOT_USERNAME}'@'%'"
+mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES"

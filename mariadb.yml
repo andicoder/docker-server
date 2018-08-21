@@ -1,26 +1,28 @@
 version: '2'
 
-# connect with docker exec -i -t mariadb bas
+# connect with docker exec -i -t mariadb-***REMOVED***bash
 services:
   mariadb:
-    image: mariadb
+    build:
+      context: ./
+      dockerfile: mariadb-build
+    image: mariadb-***REMOVED***:latest
     restart: always
-    container_name: mariadb
+    container_name: mariadb-***REMOVED***
     ports:
       - 3306:3306
     environment:
-      - MYSQL_ROOT_PASSWORD=test
-  volumes:
-      - files:/mnt/data
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - SBFSPOT_USERNAME=${DB_SBFSPOT_USERNAME}
+      - SBFSPOT_PASSWORD=${DB_SBFSPOT_PASSWORD}
+    volumes:
+      - mysql:/var/lib/mysql
+      - backup:/var/lib/backup
 
 volumes:
-  files:
-    driver: local
   mysql:
     driver: local
   backup:
-    driver: local
-  redis:
     driver: local
   
 # Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.

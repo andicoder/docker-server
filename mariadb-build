@@ -1,0 +1,6 @@
+FROM mariadb:latest
+# Author
+MAINTAINER Anvar 
+# Add files 
+ADD sbfspot.sql /docker-entrypoint-initdb.d/sbfspot.sql
+ADD create_sbfspotuser.sh /docker-entrypoint-initdb.d/create_sbfspotuser.sh
