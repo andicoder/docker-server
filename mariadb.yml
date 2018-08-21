@@ -15,6 +15,8 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - SBFSPOT_USERNAME=${DB_SBFSPOT_USERNAME}
       - SBFSPOT_PASSWORD=${DB_SBFSPOT_PASSWORD}
+      - VOLKSZ_USERNAME=${DB_VOLKSZ_USERNAME}
+      - VOLKSZ_PASSWORD=${DB_VOLKSZ_PASSWORD}
     volumes:
       - mysql:/var/lib/mysql
       - backup:/var/lib/backup
