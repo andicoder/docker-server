@@ -47,7 +47,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   owncloud:
-    image: owncloud/server:${OWNCLOUD_VERSION}
+    image: owncloud/server:${OC_VERSION}
     restart: always
     container_name: owncloud
     expose:
@@ -57,36 +57,41 @@ services:
       - redis
       - letsencrypt
     environment:
-      - OWNCLOUD_DOMAIN=${OWNCLOUD_DOMAIN}
+      - OWNCLOUD_DOMAIN=${OC_DOMAIN}
       - OWNCLOUD_DB_TYPE=mysql
-      - OWNCLOUD_DB_NAME=owncloud
-      - OWNCLOUD_DB_USERNAME=${OWNCLOUDDB_USERNAME}
-      - OWNCLOUD_DB_PASSWORD=${OWNCLOUDDB_PASSWORD}
-      - OWNCLOUD_DB_HOST=db
-      - OWNCLOUD_ADMIN_USERNAME=${ADMIN_USERNAME}
-      - OWNCLOUD_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - OWNCLOUD_DB_NAME=${DB_NAME}
+      - OWNCLOUD_DB_USERNAME=${DB_USERNAME}
+      - OWNCLOUD_DB_PASSWORD=${DB_PASSWORD}
+      - OWNCLOUD_DB_HOST=mariadb
+      - OWNCLOUD_ADMIN_USERNAME=${OC_ADMIN_USERNAME}
+      - OWNCLOUD_ADMIN_PASSWORD=${OC_ADMIN_PASSWORD}
       - OWNCLOUD_UTF8MB4_ENABLED=true
       - OWNCLOUD_REDIS_ENABLED=true
       - OWNCLOUD_REDIS_HOST=redis
-      - VIRTUAL_HOST=${OWNCLOUD_DOMAIN}
-      - LETSENCRYPT_HOST=owncloud.***REMOVED***.de
+      - VIRTUAL_HOST=${OC_DOMAIN}
+      - LETSENCRYPT_HOST=${OC_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
     volumes:
       - files:/mnt/data
 
-  db:
-    image: webhippie/mariadb:latest
-    container_name: database
+  mariadb:
+    build:
+      context: ./
+      dockerfile: mariadb-build
+    image: mariadb-***REMOVED***:latest
     restart: always
+    container_name: mariadb-***REMOVED***
+    ports:
+      - 3306:3306
     environment:
-      - MARIADB_ROOT_PASSWORD={DB_ROOT_PASSWORD}
-      - MARIADB_USERNAME=${OWNCLOUDDB_USERNAME}
-      - MARIADB_PASSWORD=${OWNCLOUDDB_PASSWORD}
-      - MARIADB_DATABASE=owncloud
-      - MARIADB_MAX_ALLOWED_PACKET=128M
-      - MARIADB_INNODB_LOG_FILE_SIZE=64M
-      - MARIADB_INNODB_LARGE_PREFIX=ON
-      - MARIADB_INNODB_FILE_FORMAT=Barracuda
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - SBFSPOT_USERNAME=${DB_SBFSPOT_USERNAME}
+      - SBFSPOT_PASSWORD=${DB_SBFSPOT_PASSWORD}
+      - VOLKSZ_USERNAME=${DB_VOLKSZ_USERNAME}
+      - VOLKSZ_PASSWORD=${DB_VOLKSZ_PASSWORD}
     volumes:
       - mysql:/var/lib/mysql
       - backup:/var/lib/backup
@@ -106,13 +111,9 @@ volumes:
   html:
   certs:
   files:
-    driver: local
   mysql:
-    driver: local
   backup:
-    driver: local
   redis:
-    driver: local
 
 # Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.
 networks:
