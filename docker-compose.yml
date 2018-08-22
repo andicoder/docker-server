@@ -71,7 +71,7 @@ services:
       - VIRTUAL_HOST=${OC_DOMAIN}
       - LETSENCRYPT_HOST=${OC_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-      - LETSENCRYPT_TEST=true
+      - LETSENCRYPT_TEST=false
     volumes:
       - files:/mnt/data
 
@@ -85,7 +85,7 @@ services:
       - VIRTUAL_HOST=${MAIL_DOMAIN}
       - LETSENCRYPT_HOST=${MAIL_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-      - LETSENCRYPT_TEST=true
+      - LETSENCRYPT_TEST=false
 
   mail:
     image: tvial/docker-mailserver:latest
