@@ -71,8 +71,21 @@ services:
       - VIRTUAL_HOST=${OC_DOMAIN}
       - LETSENCRYPT_HOST=${OC_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+      - LETSENCRYPT_TEST=true
     volumes:
       - files:/mnt/data
+
+  webmail:
+    image: nginx:1.13.1
+    restart: always
+    container_name: webmail
+    depends_on:
+      - letsencrypt
+    environment:
+      - VIRTUAL_HOST=${MAIL_DOMAIN}
+      - LETSENCRYPT_HOST=${MAIL_DOMAIN}
+      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+      - LETSENCRYPT_TEST=true
 
   mariadb:
     build:
