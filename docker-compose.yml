@@ -107,11 +107,11 @@ services:
     environment:
       - ENABLE_SPAMASSASSIN=1
       - ENABLE_CLAMAV=1
-      - ENABLE_FAIL2BAN=1
+      - ENABLE_FAIL2BAN=0
       - ENABLE_POSTGREY=1
       - ONE_DIR=1
       - DMS_DEBUG=0
-      - SSL_TYPE=manual
+      - SSL_TYPE=letsencrypt
     cap_add:
       - NET_ADMIN
       - SYS_PTRACE
