@@ -109,6 +109,7 @@ services:
       - ENABLE_CLAMAV=1
       - ENABLE_FAIL2BAN=0
       - ENABLE_POSTGREY=1
+      - ENABLE_FETCHMAIL=1
       - ONE_DIR=1
       - DMS_DEBUG=0
       - SSL_TYPE=letsencrypt
