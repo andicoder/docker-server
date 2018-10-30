@@ -1,0 +1,5 @@
+# increase maximum message size
+   message_size_limit = 52428800
+
+   recipient_delimiter = -
+

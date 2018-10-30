@@ -111,10 +111,12 @@ services:
   redis:
     image: redis
     restart: always
+    container_name: redis
 
   app:
     build: ./app
     restart: always
+    container_name: nextcloud-app
     volumes:
       - nextcloud:/var/www/html
     environment:
@@ -130,6 +132,7 @@ services:
   web:
     build: ./web
     restart: always
+    container_name: nextcloud-web
     expose:
       - 443
     volumes:
@@ -145,6 +148,7 @@ services:
   cron:
     build: ./app
     restart: always
+    container_name: nextcloud-cron
     volumes:
       - nextcloud:/var/www/html
     entrypoint: /cron.sh
@@ -163,6 +167,7 @@ volumes:
   redis:
   maildata:
   mailstate:
+  nextcloud:
 
 # Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.
 networks:
