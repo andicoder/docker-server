@@ -46,35 +46,6 @@ services:
       - certs:/etc/nginx/certs
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  owncloud:
-    image: owncloud/server:${OC_VERSION}
-    restart: always
-    container_name: owncloud
-    expose:
-      - 443
-    depends_on:
-      - mariadb
-      - redis
-      - letsencrypt
-    environment:
-      - OWNCLOUD_DOMAIN=${OC_DOMAIN}
-      - OWNCLOUD_DB_TYPE=mysql
-      - OWNCLOUD_DB_NAME=${DB_NAME}
-      - OWNCLOUD_DB_USERNAME=${DB_USERNAME}
-      - OWNCLOUD_DB_PASSWORD=${DB_PASSWORD}
-      - OWNCLOUD_DB_HOST=mariadb
-      - OWNCLOUD_ADMIN_USERNAME=${OC_ADMIN_USERNAME}
-      - OWNCLOUD_ADMIN_PASSWORD=${OC_ADMIN_PASSWORD}
-      - OWNCLOUD_UTF8MB4_ENABLED=true
-      - OWNCLOUD_REDIS_ENABLED=true
-      - OWNCLOUD_REDIS_HOST=redis
-      - VIRTUAL_HOST=${OC_DOMAIN}
-      - LETSENCRYPT_HOST=${OC_DOMAIN}
-      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-      - LETSENCRYPT_TEST=false
-    volumes:
-      - files:/mnt/data
-
   webmail:
     image: nginx:1.13.1
     restart: always
@@ -118,9 +89,7 @@ services:
       - SYS_PTRACE
 
   mariadb:
-    build:
-      context: ./
-      dockerfile: mariadb-build
+    build: ./db
     image: mariadb-***REMOVED***:latest
     restart: always
     container_name: mariadb-***REMOVED***
@@ -140,35 +109,60 @@ services:
       - backup:/var/lib/backup
 
   redis:
-    image: webhippie/redis:latest
-    container_name: owncloud-redis
+    image: redis
     restart: always
-    environment:
-      - REDIS_DATABASES=1
+
+  app:
+    build: ./app
+    restart: always
     volumes:
-      - redis:/var/lib/redis
+      - nextcloud:/var/www/html
+    environment:
+      - MYSQL_HOST=mariadb
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      - mariadb
+      - redis
+      - letsencrypt
+
+  web:
+    build: ./web
+    restart: always
+    expose:
+      - 443
+    volumes:
+      - nextcloud:/var/www/html:ro
+    depends_on:
+      - app
+    environment:
+      - VIRTUAL_HOST=${OC_DOMAIN}
+      - LETSENCRYPT_HOST=${OC_DOMAIN}
+      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+      - LETSENCRYPT_TEST=false
+
+  cron:
+    build: ./app
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - mariadb
+      - redis
 
 volumes:
   conf:
-    driver: local
   vhost:
-    driver: local
   html:
-    driver: local
   certs:
-    driver: local
   files:
-    driver: local
   mysql:
-    driver: local
   backup:
-    driver: local
   redis:
-    driver: local
   maildata:
-    driver: local
   mailstate:
-    driver: local
 
 # Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.
 networks:
