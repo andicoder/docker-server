@@ -1,5 +1,5 @@
 /************************************************************************************************
-	SBFspot - Yet another tool to read power production of SMA® solar inverters
+	SBFspot - Yet another tool to read power production of SMAï¿½ solar inverters
 	(c)2012-2015, SBF
 
 	Latest version found at https://sbfspot.codeplex.com
@@ -8,8 +8,8 @@
 	http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 	You are free:
-		to Share — to copy, distribute and transmit the work
-		to Remix — to adapt the work
+		to Share ï¿½ to copy, distribute and transmit the work
+		to Remix ï¿½ to adapt the work
 	Under the following conditions:
 	Attribution:
 		You must attribute the work in the manner specified by the author or licensor
@@ -88,10 +88,8 @@ void CommonServiceCode(void)
 
 				std::string data;
 
-				VecPVOutputHash_t hashes;
-
- 				int datapoints = 0;
-				if((rc_db = db.batch_get_archdaydata(data, it->first/*Serial*/, batch_datelimit, batch_statuslimit, datapoints, hashes)) == db.SQL_OK)
+				int datapoints = 0;
+				if((rc_db = db.batch_get_archdaydata(data, it->first/*Serial*/, batch_datelimit, batch_statuslimit, datapoints)) == db.SQL_OK)
 				{
 					if (!data.empty())
 					{
@@ -118,7 +116,7 @@ void CommonServiceCode(void)
 							{
 								msg << " => OK (200)";
 								Log(msg.str(), LOG_INFO_);
-								rc_db = db.batch_set_pvoflag(response, it->first/*Serial*/, hashes);
+								rc_db = db.batch_set_pvoflag(response, it->first/*Serial*/);
 								if (rc_db != db.SQL_OK)
 									Log("batch_set_pvoflag() returned " + db.errortext(), LOG_ERROR_);
 							}
@@ -132,7 +130,7 @@ void CommonServiceCode(void)
 							Log("addBatchStatus() returned " + PVO.errtext(), LOG_ERROR_);
 					}
 				}
- 			}
+			}
 
 			db.close();
 		}
@@ -153,8 +151,9 @@ int Log(std::string txt, ERRLEVEL level)
 {
 	char buff[32];
 	time_t now = time(NULL);
-	strftime(buff, sizeof(buff), "SBFspotUpload%Y%m%d.log", localtime(&now));
-	std::string fullpath(cfg.getLogDir() + buff);
+//	strftime(buff, sizeof(buff), "SBFspotUpload%Y%m%d.log", localtime(&now));
+	//std::string fullpath(cfg.getLogDir() + buff);
+    std::string fullpath(cfg.getLogDir() + "SBFspotUpload.log");
 
 	std::ofstream fs_log;
 	fs_log.open(fullpath.c_str(), std::ios::app | std::ios::out);

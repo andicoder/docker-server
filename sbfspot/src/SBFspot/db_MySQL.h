@@ -77,8 +77,8 @@ public:
 	bool isopen(void) { return (m_dbHandle != NULL); }
 	int type_label(InverterData *inverters[]);
 	int device_status(InverterData *inverters[], time_t spottime);
-	int batch_get_archdaydata(std::string &data, unsigned int Serial, int datelimit, int statuslimit, int& recordcount, VecPVOutputHash_t& hashes);
-	int batch_set_pvoflag(const std::string &data, unsigned int Serial, const VecPVOutputHash_t& hashes);
+	int batch_get_archdaydata(std::string &data, unsigned int Serial, int datelimit, int statuslimit, int& recordcount);
+	int batch_set_pvoflag(const std::string &data, unsigned int Serial);
 	int set_config(const std::string key, const std::string value);
 	int get_config(const std::string key, std::string &value);
 	int get_config(const std::string key, int &value);

@@ -176,14 +176,17 @@ int db_SQL_Base::device_status(InverterData *inverters[], time_t spottime)
 	return rc;
 }
 
-int db_SQL_Base::batch_get_archdaydata(std::string &data, unsigned int Serial, int datelimit, int statuslimit, int& recordcount, VecPVOutputHash_t& hashes)
+int db_SQL_Base::batch_get_archdaydata(std::string &data, unsigned int Serial, int datelimit, int statuslimit, int& recordcount)
 {
 	std::stringstream sql;
 	int rc = SQL_OK;
 	recordcount = 0;
 
-	sql << "SELECT  `PvoutputTS`, `V1`, `V2`, `V3`, `V4`, `V5`, `V6`, `V7`, `V8`, `V9`, `V10`, `V11`, `V12`, `TimeStamp`, `SerialHash` FROM `vwUploadData` "
+	sql << "SELECT DATE_FORMAT(Timestamp,'%Y%m%d,%H:%i'),V1,V2,V3,V4,V5,V6,V7,V8,V9,V10,V11,V12 FROM vwPvoData "
 		"WHERE TimeStamp>NOW()-INTERVAL " << datelimit-1 << " DAY "
+		"AND PVoutput IS NULL "
+		"AND Serial=" << Serial << " "
+		"ORDER BY TimeStamp "
 		"LIMIT " << statuslimit;
 
 	rc = mysql_query(m_dbHandle, sql.str().c_str());
@@ -211,9 +214,6 @@ int db_SQL_Base::batch_get_archdaydata(std::string &data, unsigned int Serial, i
 				if (sqlRow[Vx] != NULL)
 					result << sqlRow[Vx];
 			}
-
-			PVOutputHash_t hash = std::make_pair(sqlRow[13], sqlRow[14]);
-			hashes.push_back(hash);
 
 			const std::string& str = result.str();
 			int end = str.length();
@@ -243,26 +243,36 @@ int db_SQL_Base::batch_get_archdaydata(std::string &data, unsigned int Serial, i
 	return rc;
 }
 
-int db_SQL_Base::batch_set_pvoflag(const std::string &data, unsigned int Serial, const VecPVOutputHash_t& hashes)
+int db_SQL_Base::batch_set_pvoflag(const std::string &data, unsigned int Serial)
 {
 	std::stringstream sql;
 	int rc = SQL_OK;
 
+	vector<std::string> items;
+	boost::split(items, data, boost::is_any_of(";"));
+
 	exec_query("START TRANSACTION");
 
-	sql << "INSERT INTO Pvoutput "
-		"(`TimeStamp`, `SerialHash`, `PvOutput`) "
-		"VALUES ";
+	sql << "UPDATE DayData "
+		"SET PVoutput=1 "
+		"WHERE Serial=" << Serial << " "
+		"AND DATE_FORMAT(FROM_UNIXTIME(Timestamp),'%Y%m%d,%H:%i') "
+		"IN (";
 
-	for (VecPVOutputHash_t::const_iterator it = hashes.begin(); it != hashes.end(); ++it)
+	bool firstitem = true;
+	for (vector<std::string>::iterator it=items.begin(); it!=items.end(); ++it)
 	{
-		sql << "('" << it->first << "'," << it->second << ", 1)";
-
-		sql << (++it == hashes.end() ? " " : ",");
-		--it;
+		if (it->substr(15, 1) == "1")
+		{
+			if (!firstitem)
+				sql << ",";
+			else
+				firstitem = false;
+			sql << s_quoted(it->substr(0, 14));
+		}
 	}
 
-	sql << "ON DUPLICATE KEY UPDATE `Pvoutput` = 1";
+	sql << ")";
 
 	if ((rc = exec_query(sql.str())) != SQL_OK)
 	{

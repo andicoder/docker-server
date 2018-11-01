@@ -81,7 +81,7 @@ int db_SQL_Export::day_data(InverterData *inverters[])
 			if (first_rec < last_rec) // Production data found or all zero?
 			{
 				// Store data from first to last record
-				for (unsigned int idx = first_rec; idx <= last_rec; idx++)
+		        for (unsigned int idx = first_rec; idx <= last_rec; idx++)
 				{
 					// Invalid dates are not written to db
 					if (inverters[inv]->dayData[idx].datetime > 0)
@@ -138,7 +138,7 @@ int db_SQL_Export::day_data(InverterData *inverters[])
 		}
 
 		mysql_stmt_close(pStmt);
- 
+
 		if (rc == SQL_OK)
 			exec_query("COMMIT");
 		else

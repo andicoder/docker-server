@@ -41,7 +41,6 @@ DISCLAIMER:
 #include "Ethernet.h"
 #include <time.h>
 #include <vector>
-#include <utility>
 #include <algorithm>
 #include <string>
 #include "boost_ext.h"
@@ -487,7 +486,4 @@ extern const char *IP_Broadcast;
 extern const char *IP_Inverter;
 
 extern TagDefs tagdefs;
-
-typedef std::pair<std::string, std::string> PVOutputHash_t;
-typedef std::vector<PVOutputHash_t>  VecPVOutputHash_t;
 

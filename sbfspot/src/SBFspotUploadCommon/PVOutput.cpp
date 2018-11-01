@@ -296,8 +296,7 @@ CURLcode PVOutput::addBatchStatus(std::string data, std::string &response)
 	if (m_curl)
 	{
 		stringstream postData;
-		//postData << "c1=1&data=" << data;
-		postData << "data=" << data;
+		postData << "c1=1&data=" << data;
 
 		if ((m_curlres = downloadURL("http://pvoutput.org/service/r2/addbatchstatus.jsp", postData.str())) == CURLE_OK)
 			response = m_buffer;
