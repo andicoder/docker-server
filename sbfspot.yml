@@ -6,7 +6,12 @@ services:
     build: ./sbfspot
     restart: always
     container_name: sbfspotdaemon
+    volumes:
+      - sbfspot:/var/log/sbfspot
 
+volumes:
+  sbfspot:
+      
 # Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.
 networks:
   default:

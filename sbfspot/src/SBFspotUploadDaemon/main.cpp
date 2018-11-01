@@ -9,8 +9,8 @@
 	http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 	You are free:
-		to Share — to copy, distribute and transmit the work
-		to Remix — to adapt the work
+		to Share ï¿½ to copy, distribute and transmit the work
+		to Remix ï¿½ to adapt the work
 	Under the following conditions:
 	Attribution:
 		You must attribute the work in the manner specified by the author or licensor
@@ -102,19 +102,19 @@ int main(int argrc, char *argv[])
         exit(EXIT_FAILURE);
 	}
 
-    // Create child process
-    pid_t pid = fork();
-
-    if (pid < 0)
-    {
-        Log("Could not create child process.", LOG_ERROR_);
-        exit(EXIT_FAILURE);
-    }
-    // Child process created, exit parent process
-    if (pid > 0)
-    {
-        exit(EXIT_SUCCESS);
-    }
+//    // Create child process
+//    pid_t pid = fork();
+//
+//    if (pid < 0)
+//    {
+//        Log("Could not create child process.", LOG_ERROR_);
+//        exit(EXIT_FAILURE);
+//    }
+//    // Child process created, exit parent process
+//    if (pid > 0)
+//    {
+//        exit(EXIT_SUCCESS);
+//    }
 
     // Set file permission for files created by our child process
     umask(0);
@@ -123,13 +123,13 @@ int main(int argrc, char *argv[])
     if ((rc = chdir("/")) != 0)
         Log("Could not change directory.", LOG_WARNING_);
 
-    // Create session for our new process
-    pid_t sid = setsid();
-    if (sid < 0)
-    {
-        Log("Could not create session for child process.", LOG_ERROR_);
-        exit(EXIT_FAILURE);
-    }
+//    // Create session for our new process
+//    pid_t sid = setsid();
+//    if (sid < 0)
+//    {
+//        Log("Could not create session for child process.", LOG_ERROR_);
+//        exit(EXIT_FAILURE);
+//    }
 
     // close all standard file descriptors.
     fclose(stdin);

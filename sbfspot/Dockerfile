@@ -8,8 +8,6 @@ RUN apt-get update && apt-get install -y  \
   libboost-date-time-dev
 RUN mkdir -p /var/log/sbfspot
   
-COPY sbfspot/ /tmp/
+COPY src/ /tmp/
 RUN make -C /tmp/SBFspotUploadDaemon install_mysql clean_release_mysql
-ENTRYPOINT /usr/local/bin/sbfspot.3/SBFspotUploadDaemon && tail -f /var/log/sbfspot/*
-#RUN /bin/bash
-#ENTRYPOINT ["/bin/sh", "-c", "while true; do sleep 1; done"]
+ENTRYPOINT /usr/local/bin/sbfspot.3/SBFspotUploadDaemon
