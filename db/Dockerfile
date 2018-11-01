@@ -1,6 +1,4 @@
 FROM mariadb:latest
-# Author
-MAINTAINER Anvar 
 # Add files 
 ADD sbfspot.sql /docker-entrypoint-initdb.d/
 ADD volkszaehler.sql /docker-entrypoint-initdb.d/
