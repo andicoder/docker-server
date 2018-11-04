@@ -1,0 +1,1048 @@
+#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass paper
+\use_default_options true
+\language ngerman
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered true
+\pdf_bookmarksopen true
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize a4paper
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+volkszaehler.org
+\end_layout
+
+\begin_layout SubTitle
+the open smartmetering platform
+\end_layout
+
+\begin_layout Author
+volkszaehler.org community, Steffen Vogel
+\end_layout
+
+\begin_layout Abstract
+volkszaehler.org ist ein freier Smart Meter im Selbstbau.
+ Die anfallenden Stromprofile bleiben dabei unter der Kontrolle des Nutzers.
+\end_layout
+
+\begin_layout Abstract
+Seit dem 1.1.2010 müssen Stromversorger ihren Kunden für Neubauten so genannte
+ "intelligente Stromzähler" (Smart Meter) anbieten.
+ Der Kunde soll dadurch seinen Stromverbrauch analysieren und optimieren
+ können.
+\end_layout
+
+\begin_layout Abstract
+Das dabei anfallende Stromverbrauchsprofil erlaubt einen sehr detallierten
+ Einblick in den Tagesablauf des Nutzers (wann steht er auf? wann geht er
+ in's Bett? wann kocht er? wie oft verwendet er seine Spülmaschine? verändert
+ sich sein Verhalten? ...).
+\end_layout
+
+\begin_layout Abstract
+Darum sollten diese Daten ausschließlich für den Nutzer selbst zur Verfügung
+ stehen - und das geht nur, wenn man sich den Smart Meter selbst baut.
+ Mit einem Materialeinsatz von ca.
+ 100 €, etwas Geschick und Zeit lässt sich das mit Hilfe eines Standard-µC-Modul
+s aufbauen.
+\end_layout
+
+\begin_layout Title
+\begin_inset Graphics
+	filename /home/stv0g/workspace/volkszaehler.org/misc/graphics/logo.png
+	lyxscale 40
+	scale 40
+	draft
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Einführung
+\end_layout
+
+\begin_layout Standard
+Neben dem 
+\series bold
+Schutz der Privatsphäre
+\series default
+, hat das Projekt auch noch einige andere Ziele:
+\end_layout
+
+\begin_layout Itemize
+kostenfreie Alternative gegenüber den kommerziellen Messstellenbetreibern
+\end_layout
+
+\begin_layout Itemize
+Bewusstsein über Verbrauch/Nutzungsverhalten bilden
+\end_layout
+
+\begin_layout Itemize
+Energie intelligenter zu nutzen
+\end_layout
+
+\begin_layout Itemize
+die Breite Masse erreichen
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Daher stammt auch der Name 
+\series bold
+volks
+\series default
+zaehler.org
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+offene Protokolle und Standards zu vorrantreiben
+\end_layout
+
+\begin_layout Standard
+Wir haben es uns zur Aufgabe gemacht diese Ziele durch eine lückenlose Kette
+ von quelloffener Soft- und Hardware zu erreichen.
+ Der Nutzer soll die Möglichkeit haben jeden einzellnen Schritt nachvollziehen
+ zu können.
+ Daraus folgt nicht, dass wir jede Zeile Code selbst geschrieben haben.
+ Wir nutzen eine Reihe anderer Software, die aber wiederum selbst quelloffen
+ ist.
+\end_layout
+
+\begin_layout Standard
+In diesem Artikel werden wir das Projekt vorstellen, einen generellen Überblick
+ über die einzellnen Kompontenten geben und auf die Implementierung eingehen.
+ Ich möchte damit den Einstieg in das Projekt erleichtern und neue Entwickler
+ motivieren sich zu beteiligen.
+\end_layout
+
+\begin_layout Standard
+Einzelheiten zur Installation/Konfiguration eines eigenen volkszaehler.org
+ Setups finden Sie unsere Mailingliste
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+volkszaehler-dev@lists.volkszaehler.org
+\end_layout
+
+\end_inset
+
+ und im Wiki
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://wiki.volkszaehler.org
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Was ist ein intelligenter Zähler, Smart Meter oder elektronischer Heimzähler
+\end_layout
+
+\begin_layout Standard
+Ein intelligenter Zähler ist ein elektronischer Strom-, Gas-, Wasser- oder
+ Wärmemengenzähler.
+ Er soll dem Nutzer seinen Energieverbrauch transparent machen.
+ Durch eine zeitnahe Rückmeldung soll ein sparsamer Umgang mit Energie gefördert
+ werden.
+ Detaillierte Lastprofile erlauben dem Verbraucher eine gezielte Optimierung
+ seines Energieverbrauchs.
+ Sein Lastprofil gibt ihm Antworten auf die folgenden Fragen:
+\end_layout
+
+\begin_layout Itemize
+Wie hoch ist die eigene Grundlast?
+\end_layout
+
+\begin_layout Itemize
+Lohnt sich (aus ökonomischer oder ökologischer Sicht) der Ersatz eines Altgeräte
+s durch ein effizienteres Neugerät?
+\end_layout
+
+\begin_layout Itemize
+Wie hoch ist der Anteil von Geräten mit hoher Leistung, die nur für kurze
+ Zeit eingesetzt werden (bei Stromverbrauchern z.B.
+ Fön, Staubsauger, Mikrowelle), am Gesamtverbrauch?
+\end_layout
+
+\begin_layout Itemize
+Gibt es hier Optimierungspotenzial?
+\end_layout
+
+\begin_layout Itemize
+Lassen sich Lastspitzen in Zeiten günstigerer, tageszeitabhängiger Tarife
+ verschieben?
+\end_layout
+
+\begin_layout Standard
+Dem Energieversorger dienen die genaueren Verbrauchszahlen im Falle eines
+ intelligenten Stromzählers dazu, die Bereitstellung von Strom im Netz zu
+ optimieren und so den risikobehafteten kurzfristigen Zukaufbedarf an der
+ Strombörse zu minimieren und die Kraftwerkeinsatzplanung so zu optimieren,
+ dass die bereitgestellte Strommenge die Nachfrage nur minimal übersteigt.
+ Um dies zu erreichen sind die intelligenten Zähler in der Regel aus der
+ Ferne vom Versorger auslesbar.
+ 
+\end_layout
+
+\begin_layout Standard
+Bei den konventionellen Ferrariszählern wird in der Regel einmal im Jahr
+ der Zählerstand abgelesen.
+ Dadurch hat weder der Versorger noch der Kunde einen Überblick darüber,
+ wann genau er wieviel Strom verbraucht.
+ Bei den intelligenten Stromzählern wird der Verbrauch in deutlich kürzeren
+ Intervallen erfasst.
+\end_layout
+
+\begin_layout Standard
+Anhand der gemessenen Werte lassen sich Verbrauchsdiagramme erstellen.
+ Hier seht Ihr als Beispiel ein paar Diagramme typischer Verbraucher eines
+ Haushaltes:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/stv0g/workspace/volkszaehler.org/misc/graphics/backofen.jpg
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/stv0g/workspace/volkszaehler.org/misc/graphics/kuehlschrank.jpg
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/stv0g/workspace/volkszaehler.org/misc/graphics/spuelmaschine.jpg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Tatsächlich birgt die verbraucherfreundliche Lösung einer automatischen
+ und feingranularen Verbrauchserfassung durch den Stromzähler die Möglichkeit
+ zur Erstellung eines präzisen Lastprofiles.
+ Der Lastgang eines Haushalts verrät viel über die Gewohnheiten der Personen,
+ die in diesem Haushalt leben.
+ Anhand der gemessenen Daten lassen sich Nutzungsprofile erstellen.
+ Es sind im Prinzip Rückschlüsse auf die Lebensgewohnheiten des Haushaltes
+ möglich:
+\end_layout
+
+\begin_layout Itemize
+Wann stehen die Bewohner auf?
+\end_layout
+
+\begin_layout Itemize
+Wann gehen Sie ins Bett?
+\end_layout
+
+\begin_layout Itemize
+Wird jeden Tag gekocht? mit einer oder mit mehreren Herdplatten? oder gibts
+ häufig Pizza? :-)
+\end_layout
+
+\begin_layout Itemize
+Ändern sich die Gewohnheiten (Besuch oder Nachwuchs)?
+\end_layout
+
+\begin_layout Itemize
+Muss ein Bewohner Nachts häufiger auf Toilette?
+\end_layout
+
+\begin_layout Standard
+Im Prinzip hat man mit diesen Daten eine bessere Überwachung als mit einer
+ Kamera!
+\end_layout
+
+\begin_layout Standard
+Das Energiewirtschaftsgesetz (EnWG) schreibt den Versorgern nur vor, das
+ auch der Kunde auf diese Daten zugreifen können muss.
+ Die Nutzung, Weitergabe, Anonymisierung der Daten ist in dem Gesetz nicht
+ explizit geregelt.
+ 
+\end_layout
+
+\begin_layout Section
+Warum brauche ich einen volkszaehler?
+\end_layout
+
+\begin_layout Standard
+Wer seinen Energiebedarf analysieren möchte, braucht dazu genaue Messwerte.
+ Bei heutigen Hausinstallationen mit konventionellen Drehstromzählern sind
+ für den Stromverbrauch diese Messwerte nicht vorhanden.
+ Es wird also ein intelligenter Zähler benötigt, der in der Lage ist den
+ Energiebedarf über sehr kurze Zeiträume zu messen und zu speichern.
+\end_layout
+
+\begin_layout Standard
+Diese Geräte werden heute schon von vielen Versorgern angeboten.
+ Die einfachen Lösungen ermöglichen die Anzeige der aktuellen Leistung,
+ der Verbrauchswerte des aktuellen Tages, der aktuellen Woche, des aktuellen
+ Monats und der jeweils vorhergehenden Zeiträume.
+ Bei den meisten Lösungen, bei denen darüber hinaus eine komfortable Auswertung
+ möglich ist, werden die Verbrauchsdaten jedoch zum Versorger übertragen.
+ Der Nutzer kann dann i.d.R.
+ über eine Weboberfäche eine komfortable Analyse vornehmen.
+\end_layout
+
+\begin_layout Standard
+Wie schon weiter oben geschildert besteht nun die Möglichkeit für den Versorger
+ auf Grundlage der Daten Nutzerprofile anzulegen und diese auszuwerten.
+\end_layout
+
+\begin_layout Standard
+So Lustig diese Gedankenspiele auch sind - mit einem intelligenten Zähler
+ eines Versorgers gibt man seine Daten aus der Hand und weiß nicht was mit
+ diesen Daten gemacht wird.
+\end_layout
+
+\begin_layout Standard
+Wer dies nicht möchte, hat mit dem volkszaehler die Möglichkeit sich einen
+ intelligenten Zähler selbst zu bauen und die Verbrauchsdaten selbst auszuwerten.
+ Die Daten bleiben beim Kunden und der Versorger hat keinen Zugriff auf
+ diese Daten.
+ 
+\end_layout
+
+\begin_layout Section
+Wie funktioniert der volkszaehler?
+\end_layout
+
+\begin_layout Standard
+Der volkszaehler besteht aus mehreren Modulen.
+ Für jedes Modul gibt es unterschiedliche Ideen der Umsetzung.
+ Es gibt also nicht den einen volkszaehler, sondern in der technischen Ausführun
+g verschiedene Varianten.
+ Grundsätzlich funktionieren aber alle diese Varianten nach dem gleichen
+ Prinzip.
+\end_layout
+
+\begin_layout Standard
+Die Sensoren - in der Regel je einer pro Phase - werden im Schaltschrank
+ der Hausinstallation zwischen den Vorsicherrungen und den normalen Sicherungsau
+tomaten installiert.
+ Diese Sensoren geben ihre Signale an ein µController-Board weiter, welches
+ die Daten über eine Netzwerkverbindung an einen Datenbankserver zur speicherung
+ weitergibt.
+ Möchte der User nun die Daten abrufen und auswerten nutzt er dazu einen
+ Webbrowser, mit dem er die Daten aus der Datenbank abrufen - und diese
+ grafisch aufbereiten lassen kann.
+\end_layout
+
+\begin_layout Standard
+Die folgende Zeichnung zeigt die Position der Sensoren im Schaltschrank.
+ Das µController-Board kann, muss aber nicht, im Schaltschrank installiert
+ werden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename /home/stv0g/workspace/volkszaehler.org/misc/graphics/schematischer_schaltkasten.jpeg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Woraus besteht ein volkszaehler?
+\end_layout
+
+\begin_layout Standard
+Der volkszaehler besteht aus vier Modulen:
+\end_layout
+
+\begin_layout Itemize
+Sensor(en)
+\end_layout
+
+\begin_layout Itemize
+Controller
+\end_layout
+
+\begin_layout Itemize
+Backend
+\end_layout
+
+\begin_layout Itemize
+Frontend(s)
+\end_layout
+
+\begin_layout Standard
+Diese vier Module grenzen sich lokal, durch die verwendeten Technologien
+ und ihre Aufgabe voneinder ab.
+ Alle Module sind in mehreren Varianten verfügbar.
+ So den individuellen Bedürfnissen entsprechend ein angepasstes Setup aufgebaut
+ werden.
+ Mehr dazu findet Ihr im Wiki unter Morphologischer Kasten.
+\end_layout
+
+\begin_layout Subsection
+Sensoren
+\end_layout
+
+\begin_layout Standard
+Ein möglicher Messsensor ist ein Wattmeter, welches auf der Hutschiene des
+ Schaltschrankes montiert wird und zwischen den Vorsicherungen und den Sicherung
+sautomaten eingeschleift wird.
+ In der Regel wird pro Phase ein Wattmeter benötigt.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+hier ein Foto der Wattmeter im Schaltschrank einfügen!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Auf dem Foto sieht man unten die Stromanschlüße und oben - die etwas dünnere
+ Kabel - die Signalleitungen die dann zum µController-Board gehen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+kurz die Funktionsweise der Wattmeter erklären
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Diese S0-Impulszähler waren die ersten unterstützten Sensoren.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+S0
+\begin_inset Quotes erd
+\end_inset
+
+ steht hier für den Standard, der die Sensoren mit dem Controller verbindet
+ und darf nicht mit dem S0-Bus aus der ISDN Technik verwechselt werden.
+ Dieser sehr einfache Bus steht nur aus zwei Adern.
+ Nach einer zählerspezifischen Verbrauchseinheit wird ein elektrischer Impuls
+ erzeugt, der vom Controller verarbeitet werden kann.
+ Bei Stromzählern sind dies meist um die 1000 Impulse pro kWh.
+ Die gleiche Technik wird häufig auch bei Gas- und Wasserzählern eingesetzt.
+ Da lag es nahe mit dem volkszaehler auch gleich diese Gräßen zu erfassen.
+ Auch skalare Messgrößen wie z.B.
+ Temperatur, Luftdruck oder Luftfeuchtigkeit sind möglich, werden dann aber
+ nicht mehr durch Impulse erfasst.
+\end_layout
+
+\begin_layout Standard
+Ein typisches Setup für ein Einfamilienhaus könnte folgendermaßen aussehen:
+\end_layout
+
+\begin_layout Itemize
+3x S0-Stromzähler für den Hausanschluss
+\end_layout
+
+\begin_layout Itemize
+1x S0-Wasserzähler
+\end_layout
+
+\begin_layout Itemize
+1x S0-Gaszähler
+\end_layout
+
+\begin_layout Itemize
+1x Sensor für die Außentemperatur
+\end_layout
+
+\begin_layout Subsection
+Controller
+\end_layout
+
+\begin_layout Standard
+Die Aufgabe der Controller ist es Sensoren auszulesen und diese Daten direkt
+ an das Backend zu senden.
+ Meist sind sie direkt mit den Zählern/Sensoren verbunden.
+ Ein typischer Ort wäre also der Sicherungskasten.
+ Diese Controller sind dann meist in das lokale IP Netzwerk eingebunden
+ und senden ihre Daten an ein Backend.
+ Ausgehend von Prototyp sind im volkszaehler.org Projekt bisher die Atmel
+ AVR/Ethersex basierenden Controller am meisten verbreitet.
+\end_layout
+
+\begin_layout Subsection
+Backend
+\end_layout
+
+\begin_layout Standard
+Im Backend werden die Messwerte der Sensoren gespeichert und ausgewertet.
+ Es handelt sich hierbei um ein PHP Skript welches auf einem Webserver läuft
+ und somit die Schnittstelle zwischen Controller und Frontend ist.
+ Daraus folgend muss es von den Controllern sowie von den Frontends via
+ HTTP erreichbar sein.
+ Ob der Backendserver nur über das lokale Netzwerk oder auch über das Internet
+ erreichbar ist, wirkt sich nur auf die Erreichbarkeit durch die Frontends
+ und die Controller aus.
+ So kann es durchaus erwünscht sein die Daten nur im lokalen Netzwerk vorzuhalte
+n um sie gegen Zugriff über das Internet zu schützen.
+\end_layout
+
+\begin_layout Subsection
+Frontend
+\end_layout
+
+\begin_layout Standard
+Die Frontends visualisieren Messwerte und können zur Verwaltung genutzt
+ werden.
+ Durch ein zentrales Backend haben wir die Möglichkeit die Messwerte an
+ mehrere Frontends gleichzeitig zu verteilen.
+ Verschiedene Frontends, können die Daten dann unterschiedlich darzustellen.
+\end_layout
+
+\begin_layout Standard
+Das Web-basierte Frontend für den Browser ist das bisher einzige Frontend
+ und ist quasi eine Referenzimplementierung der API.
+ Es unterstützt die volle Funktionalität des Backend und kann auch zur Verwaltun
+g von Zählern genutzt werden.
+ Es nutzt AJAX um Daten dynamisch nachzuladen.
+\end_layout
+
+\begin_layout Standard
+Inspiriert vom Wattson
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.diykyoto.com/uk/wattson/about
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ haben wir uns entschieden eine ähnliche interaktive Variante dieses Moodlights
+ zu entwickeln.
+ Derzeit experimentieren wir mit fnordlichtern
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://wiki.lochraster.org/wiki/Fnordlichtmini
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Die möglichen Visualisierungsmethoden sind praktisch endlos.
+ Damit auch die Anzahl der möglichen Frontends.
+ Frontends dürfen nicht nur als abgeschlossenes System betrachtet werden.
+ Denkbar sind auch Plugins in bestehende Systeme (Social Networks, iGoogle,
+ Twitter).
+\end_layout
+
+\begin_layout Section
+API
+\end_layout
+
+\begin_layout Standard
+Die zuvor besprochenen Module kommunikzieren über eine spezifizierte API.
+\end_layout
+
+\begin_layout Standard
+Die API definiert eine Schnittstelle zwischen Controllern und Backend, sowie
+ zwischen Backend und Frontends.
+ Die API orientiert sich am REST Entwurfsmuster.
+ Dabei kann jeder Zähler/Sensor/Gruppe (im folgenden als 
+\begin_inset Quotes eld
+\end_inset
+
+Entity
+\begin_inset Quotes erd
+\end_inset
+
+ bezeichnet) durch eine weltweit eindeutige UUID referenziert werden.
+ Diese UUID werden entsprechend RFC 4122 von Backend generiert und vergeben.
+ Dieser 128 Bit lange Identifier sichert uns auch gleichzeitig die Privatsphäre.
+ Die UUID ist praktisch eine Zugangskennung und sollte immer vertraulich
+ behandelt werden.
+ Da wir keinerlei nutzerbezogene Daten speichern kann diese UUID nur durch
+ den Zugriff eines Nutzers zugeordnet werden.
+ Daher empfiehlt sich der Einsatz von verschlüsseltem HTTPS.
+\end_layout
+
+\begin_layout Standard
+Als Ausgabeformat nutzen wir das leichtgewichtige und menschenlesbare JSON.
+\end_layout
+
+\begin_layout Standard
+Eine Referenz unserer API befindet sich im Wiki.
+\end_layout
+
+\begin_layout Subsection
+Gruppierung
+\end_layout
+
+\begin_layout Standard
+Zähler und Sensoren können zusammengefasst werden.
+ Diese Aggregatoren besitzen selbst wieder eine UUID und können dadurch
+ beliebig tief verschachtelt werden.
+ Hirachische Strukturen wie z.B.
+ Mehrfamilienhäuser, Wohngemeinschaften, Hotels, Gemeinden & Städte können
+ dadurch nachgebildet und gemeinsam ausgwertet werden.
+\end_layout
+
+\begin_layout Section
+Implementierung
+\end_layout
+
+\begin_layout Standard
+Dieser Abschnitt konzentriert sich auf die Implementierung des Backends.
+ Das Backend ist in PHP programmiert und kann auf jedem LAMP-ähnlichen System
+ betrieben werden.
+ 
+\end_layout
+
+\begin_layout Standard
+Der Code ist stark Objekt orientiert.
+ Daher müssen wir PHP 5.3 vorraussetzen.
+ Diese Objekt orientierte Programmierung erlaubt es uns den Code übersichtlicher
+ und modularer aufzubauen.
+ Zukünftige Erweiterungen, neue Zählertypen können dadurch leichter in das
+ System integriert werden.
+\end_layout
+
+\begin_layout Subsection
+MVC
+\end_layout
+
+\begin_layout Standard
+Das Backend wurde nach dem 
+\series bold
+M
+\series default
+odel 
+\series bold
+V
+\series default
+iew 
+\series bold
+C
+\series default
+ontroller Entwurfsmuster aufgebaut.
+ Jeder Request an das Backend muss über die Datei 
+\family typewriter
+/htdocs/middleware.php
+\family default
+ erfolgen.
+ Sie ist quasi der 
+\begin_inset Quotes eld
+\end_inset
+
+Haupteingang
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Dadurch ist sie auch das einzige PHP Skript, das über das öffentliche 
+\begin_inset Quotes eld
+\end_inset
+
+htdocs
+\begin_inset Quotes erd
+\end_inset
+
+ Verzeichnis zugänglich sein muss
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Dort wird zunächst der PHP Interpreter konfiguriert (automatisches Laden
+ von Klassen, der Konfiguration, Fehlerbehandlung, Aufbau der Datenbankverbindun
+g).
+ Danach wird direkt der Router initialisiert.
+\end_layout
+
+\begin_layout Subsubsection
+Router
+\end_layout
+
+\begin_layout Standard
+Der Router ist das Herz der MVC Struktur.
+ Er leitet den Request an den zuständigen Kontext
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Wir nutzen hier den Begriff 
+\begin_inset Quotes eld
+\end_inset
+
+Kontext
+\begin_inset Quotes erd
+\end_inset
+
+ um eine Verwechslung mit dem Hardware-Controllern zu vermeiden.
+ Entsprechend des MVC-Patterns ist hier der 
+\begin_inset Quotes eld
+\end_inset
+
+Controller
+\begin_inset Quotes erd
+\end_inset
+
+ gemeint.
+\end_layout
+
+\end_inset
+
+ weiter und antwortet mit dem korrekten Ausgabeformat.
+\end_layout
+
+\begin_layout Standard
+Alle Anfragen an das Backend müssen einem bestimmten Schema entsprechen.
+ Hier wird auch der zuvor angesprochene Einsatz von REST deutlich.
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+http://<server>:<port>/<path_to_volkszaehler>/middleware[.php]/<context>[/<uuid>].<fo
+rmat>?<paramters>=<values>
+\end_layout
+
+\begin_layout Subsubsection
+Kontext (Controller)
+\end_layout
+
+\begin_layout Standard
+Das Backend hat verschiedene Aufgaben zu bewältigen.
+ Für jede dieser Aufgaben gibt es einen eigenen Kontext
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Eigentlich handelt es sich hier um die Controller des MVC-Konzeptes.
+ Wir nennen sie nur Kontext um eine Verwechslung mit den Hardware-Controllern
+ zu vermeiden.
+\end_layout
+
+\end_inset
+
+.
+ Diese Kontexte enthalten die Logik des Backends:
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+DataController
+\family default
+: Daten verarbeiten
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+EntityController
+\family default
+: Entities verwalten
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\family typewriter
+ChannelController
+\family default
+: für Sensoren und Zähler
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+AggregatorController
+\family default
+: für Gruppen/User/Gebäude etc.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+CapabilitiesController
+\family default
+: Eigenschaften/Fähigkeiten des Backends abfragen
+\end_layout
+
+\begin_layout Subsubsection
+Datenabstraktion (Model)
+\end_layout
+
+\begin_layout Standard
+Zur Datenbankabstraktion setzen wir Doctrine 2 ein.
+ Dieses Database Abstraction Layer (DAL) erlaubt es uns datenbankspezifische
+ Eigenheiten, SQL-Dialekte ähnliches zu ignorieren.
+ Doctrine unterstützt verschiede Datenbanken:
+\end_layout
+
+\begin_layout Itemize
+MySQL
+\end_layout
+
+\begin_layout Itemize
+SQLite
+\end_layout
+
+\begin_layout Itemize
+PostgreSQL
+\end_layout
+
+\begin_layout Itemize
+Oracle
+\end_layout
+
+\begin_layout Standard
+Aufbauend auf das DAL kommt der Object Relational Mapper (ORM) von Doctrine
+ zum Einsatz.
+ Wir können mit den Daten nun als Instanzen von PHP-Objekten arbeiten.
+ SQL Queries sind nicht mehr nötig.
+ Für weitere Infos empfehle ich die Dokumentation des Doctrine Projekts.
+\end_layout
+
+\begin_layout Subsubsection
+Ausgabe (View)
+\end_layout
+
+\begin_layout Standard
+Das Backend kann in verschiedenen Formaten antworten:
+\end_layout
+
+\begin_layout Itemize
+JSON (Standard)
+\end_layout
+
+\begin_layout Itemize
+XML
+\end_layout
+
+\begin_layout Itemize
+CSV
+\end_layout
+
+\begin_layout Itemize
+Klartext
+\end_layout
+
+\begin_layout Itemize
+Jpeg, PNG, Gif
+\end_layout
+
+\begin_layout Standard
+Dabei ist JSON das bevorzugte Format, das auch von dem Webinterface genutzt
+ wird.
+ Die anderen Formate sind als Alternativ für Endgeräte ohne JSON Unterstützung
+ gedacht.
+ Wir können nicht garantieren, dass diese Formate den gleichen Funktionsumfang
+ wie das JSON Format besitzen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	"version": "0.2.git-b449d4b8",
+\end_layout
+
+\begin_layout Plain Layout
+
+	"data": {
+\end_layout
+
+\begin_layout Plain Layout
+
+		"uuid": "a301d8d0-903b-1234-94bb-d943d061b6a8",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"min": [1287971672430, 8.0965, 44],
+\end_layout
+
+\begin_layout Plain Layout
+
+		"max": [1288266637795, 3017.14286, 44],
+\end_layout
+
+\begin_layout Plain Layout
+
+		"average": 14.47368,
+\end_layout
+
+\begin_layout Plain Layout
+
+		"consumption": 10.45,
+\end_layout
+
+\begin_layout Plain Layout
+
+		"count": 476,
+\end_layout
+
+\begin_layout Plain Layout
+
+		"tuples": [ ]
+\end_layout
+
+\begin_layout Plain Layout
+
+	},
+\end_layout
+
+\begin_layout Plain Layout
+
+	"debug":
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

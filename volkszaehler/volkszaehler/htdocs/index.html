@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<title>volkszaehler.org - web frontend</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<!-- icons courtesy to http://realfavicongenerator.net -->
+	<link rel="apple-touch-icon" sizes="57x57" href="ico/apple-touch-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="ico/apple-touch-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="ico/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="ico/apple-touch-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="ico/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="ico/apple-touch-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="ico/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="ico/apple-touch-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="ico/apple-touch-icon-180x180.png">
+	<link rel="icon" type="image/png" href="ico/favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="ico/android-chrome-192x192.png" sizes="192x192">
+	<link rel="icon" type="image/png" href="ico/favicon-96x96.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="ico/favicon-16x16.png" sizes="16x16">
+	<link rel="manifest" href="ico/manifest.json">
+	<link rel="shortcut icon" href="ico/favicon.ico">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="msapplication-TileImage" content="ico/mstile-144x144.png">
+	<meta name="msapplication-config" content="ico/browserconfig.xml">
+	<meta name="theme-color" content="#ffffff">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<!-- to support IE 9+ in intranet environments -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<!-- CSS before JS -->
+	<link rel="stylesheet" type="text/css" href="vendor/jquery-ui/jquery-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" type="text/css" href="css/sprites.css" />
+
+	<!-- jQuery -->
+	<script type="text/javascript" src="vendor/jquery/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript" src="vendor/jquery-ui/jquery-ui.min.js"></script>
+
+	<script type="text/javascript" src="js/jquery/jquery-ext.min.js"></script>
+	<!-- debug: uncomment scripts below -->	<!--
+	<script type="text/javascript" src="js/jquery/jquery.treeTable.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery-extensions.js"></script>
+	-->
+
+	<script type="text/javascript" src="vendor/moment.min.js"></script>
+	<script type="text/javascript" src="vendor/flot/flot.min.js"></script>
+	<!-- debug: uncomment scripts below -->	<!--
+	<script type="text/javascript" src="vendor/flot/jquery.flot.js"></script>
+	<script type="text/javascript" src="vendor/flot/jquery.flot.crosshair.js"></script>
+	<script type="text/javascript" src="vendor/flot/jquery.flot.selection.js"></script>
+	<script type="text/javascript" src="vendor/flot/jquery.flot.time.js"></script>
+	<script type="text/javascript" src="vendor/flot/jquery.flot.canvas.js"></script>
+	<script type="text/javascript" src="vendor/flot/jquery.flot.axislabels.js"></script>
+	<script type="text/javascript" src="vendor/flot/jquery.flot.xgap.js"></script>
+	<script type="text/javascript" src="vendor/flot/date.js"></script>
+	-->
+	<!-- for timezone support ensure timezone data from ftp://ftp.iana.org/tz/tzdata-latest.tar.gz is in frontend/tz -->
+	<script type="text/javascript" src="vendor/autobahn.min.js"></script>
+
+	<script type="text/javascript" src="js/init.js"></script>
+	<script type="text/javascript" src="js/middleware.js"></script>
+	<script type="text/javascript" src="js/functions.js"></script>
+	<script type="text/javascript" src="js/entities.js"></script>
+	<script type="text/javascript" src="js/wui.js"></script>
+	<script type="text/javascript" src="js/entity.js"></script>
+	<script type="text/javascript" src="js/options.js"></script>
+
+	<script type="text/javascript">
+		if (vz.options.title) {
+			document.title = vz.options.title;
+		}
+		else if (navigator.userAgent.match(/(iPhone|iPod|iPad)/i)) {
+			document.title = "Volkszaehler";
+		}
+	</script>
+</head>
+<body>
+<!--[if lt IE 8]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+<div id="content">
+	<div id="header">
+		<h2 id="title"></h2>
+
+		<div id="export">
+			<img alt="export" src="img/blank.png" class="icon-export" />
+			<select class="icons">
+				<option value="default" selected="selected" class="icon-export">Export...</option>
+				<option value="permalink" class="icon-link">Permalink</option>
+				<option value="png" class="icon-image">Screenshot</option>
+				<option value="csv" class="icon-table">CSV</option>
+				<option value="json" class="icon-json">JSON</option>
+			</select>
+		</div>
+		<br style="clear: both" />
+	</div>
+	<div id="plot">
+		<div id="flot"></div>
+		<div id="overlay"></div>
+	</div>
+
+	<div id="controls">
+		<button value="move-back" title="scroll backward"><img src="img/blank.png" class="icon-control_rewind_blue" alt="" /></button><button value="move-forward" title="scroll forward"><img src="img/blank.png" class="icon-control_fastforward_blue" alt="" /></button><button value="move-last" title="scroll to present"><img src="img/blank.png" class="icon-control_end_blue" alt="" /></button><button value="zoom-in" title="zoom in"><img src="img/blank.png" class="icon-zoom_in" alt="" /></button><button value="zoom-out" title="zoom out"><img src="img/blank.png" class="icon-zoom_out" alt="" /></button><button value="zoom-hour">Stunde</button><button value="zoom-day">Tag</button><button value="zoom-week">Woche</button><button value="zoom-month">Monat</button><button value="zoom-year">Jahr</button>
+	</div>
+
+	<div id="accordion">
+		<h3><img src="img/blank.png" class="icon-table" alt="" /> Kanäle</h3>
+		<div id="entity-list">
+			<table>
+				<thead>
+					<tr>
+						<th><img src="img/blank.png" class="icon-eye" alt="Anzeige" id="entity-toggle" title="Toggle entitites" /></th>
+						<th></th>
+						<th>Titel</th>
+						<th class="type">Typ</th>
+						<th class="min">Min</th>
+						<th class="max">Max</th>
+						<th class="average">&empty;</th>
+						<th class="last">Aktuell</th>
+						<th class="consumption">Verbrauch</th>
+						<th class="cost">Kosten</th>
+						<th class="total">Gesamt</th>
+						<th class="ops">Aktion</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+			<div><button name="entity-add"><img src="img/blank.png" class="icon-add" alt="add" /> Kanal hinzufügen</button></div>
+		</div>
+		<h3><img src="img/blank.png" class="icon-wrench" alt="" /> Optionen</h3>
+		<div id="options">
+			<table>
+				<thead>
+					<tr>
+						<th>Option</th>
+						<th>Wert</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><label for="refresh"><img src="img/blank.png" class="icon-arrow_refresh" alt="" /> Automatisch aktualisieren</label></td>
+						<td><input type="checkbox" id="refresh" /> <span id="refresh-time"></span></td>
+					</tr>
+				</tbody>
+			</table>
+			<div><button name="options-save"><img src="img/blank.png" class="icon-save" alt="save" /> Einstellungen speichern</button></div>
+		</div>
+	</div>
+</div>
+<div id="footer">
+	&copy; 2011-2018 - <a href="http://volkszaehler.org/">volkszaehler.org</a> - the open smartmeter platform
+</div>
+
+<!-- dialogs -->
+<div id="entity-move" class="dialog">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+		Sie sind im Begriff einen Kanal oder eine Gruppe zu Verschieben!
+	</p>
+</div>
+
+<div id="entity-delete" class="dialog">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+		Wollen Sie diesen Kanal wirklich Löschen?<br />
+		Dabei werden auch alle Daten gelöscht!
+	</p>
+</div>
+
+<div id="entity-delete-group" class="dialog">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+		Wollen Sie diese Gruppe wirklich Löschen?<br />
+		Dabei werden keine enthaltenen Kanäle oder Daten gelöscht.
+	</p>
+</div>
+
+<div id="entity-add" class="dialog">
+	<div class="tabs">
+		<ul>
+			<li><a href="#entity-public">Öffentliche Kanäle</a></li>
+			<li><a href="#entity-subscribe">Private Kanäle</a></li>
+			<li><a href="#entity-create">Kanal erstellen</a></li>
+		</ul>
+		<div id="entity-public">
+			<p>Öffentliche Kanäle abonnieren:</p>
+			<form>
+				<table>
+					<tr><td><label for="entity-public-middleware">Middleware:</label></td><td><select id="entity-public-middleware"></select></td></tr>
+					<tr><td><label for="entity-public-entity">Kanal:</label></td><td><select id="entity-public-entity" class="defaultfocus"></select></td></tr>
+				</table>
+				<p>
+					<input type="submit" value="Abonnieren" />
+					<label for="entity-public-cookie">Cookie:</label>
+					<input id="entity-public-cookie" type="checkbox" checked="checked" />
+				</p>
+			</form>
+		</div>
+		<div id="entity-subscribe">
+			<p>Private Kanäle und Kanäle anderer Middlewares mittels UUID hinzufügen:</p>
+			<form>
+				<table>
+					<tr><td><label for="entity-subscribe-middleware">Middleware:</label></td><td><input id="entity-subscribe-middleware" type="text" /></td></tr>
+					<tr><td><label for="entity-subscribe-uuid">UUID:</label></td><td><input id="entity-subscribe-uuid" type="text" class="defaultfocus" maxlength="36" /></td></tr>
+				</table>
+				<p>
+					<input type="submit" value="Abonnieren" />
+					<label for="entity-subscribe-cookie">Cookie:</label>
+					<input id="entity-subscribe-cookie" type="checkbox" checked="checked" />
+				</p>
+			</form>
+		</div>
+		<div id="entity-create">
+			<form method="get" target="_blank">
+				<table>
+					<tr class="property"><th>Eigenschaft</th><th>Wert</th></tr>
+					<tr class="property"><td>Middleware:</td><td><select id="entity-create-middleware"></select></td></tr>
+					<tr class="property"><td>Typ:</td><td><select class="icons" name="type" size="1"></select></td></tr>
+				</table>
+				<p>
+					<input type="submit" value="Erstellen" />
+					<label for="entity-create-cookie">Cookie:</label>
+					<input id="entity-create-cookie" type="checkbox" checked="checked" />
+				</p>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div id="entity-edit" class="dialog">
+	<form method="get" target="_blank">
+		<table>
+			<tr class="property"><th>Eigenschaft</th><th>Wert</th></tr>
+		</table>
+	</form>
+</div>
+
+<div id="chart-export" class="dialog">
+	<div class="export"></div>
+</div>
+</body>
+</html>
