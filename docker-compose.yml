@@ -164,6 +164,20 @@ services:
       - sbfspot:/var/log/sbfspot
     depends_on:
       - mariadb
+      
+  volkszaehler:
+    image: ***REMOVED***/volkszaehler
+    container_name: volkszaehler
+    restart: always
+    ports:
+      - "8073:8080"
+    depends_on:
+      - mariadb
+    environment:
+      - VIRTUAL_HOST=${VZ_DOMAIN}
+      - LETSENCRYPT_HOST=${VZ_DOMAIN}
+      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+      - LETSENCRYPT_TEST=false  
 
 volumes:
   conf:
