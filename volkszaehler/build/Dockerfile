@@ -1,6 +1,6 @@
 FROM debian:stretch-slim
 
-MAINTAINER Andreas Goetz <cpuidle@gmx.de>
+MAINTAINER Andreas Körner <andreas@***REMOVED***.de>
 
 ARG PHP_VER=7.0
 
