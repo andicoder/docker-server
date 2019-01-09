@@ -165,6 +165,13 @@ services:
     depends_on:
       - mariadb
 
+  sbfspotvzsync:
+    build: ./sbfspotvzsync
+    restart: always
+    container_name: sbfspotvzsync
+    depends_on:
+      - mariadb
+
 volumes:
   conf:
   vhost:

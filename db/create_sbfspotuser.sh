@@ -12,6 +12,6 @@ mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT UPDATE ON volkszaehler.* TO '${
 mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT INSERT ON volkszaehler.* TO '${VOLKSZ_USERNAME}'@'%'"
 mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT SELECT ON volkszaehler.* TO '${VOLKSZ_USERNAME}'@'%'"
 mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT UPDATE ON volkszaehler.* TO '${VOLKSZ_USERNAME}'@'%'"
-mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT UPDATE ON volkszaehler.* TO '${VOLKSZ_USERNAME}'@'%'"
+mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT DELETE ON volkszaehler.* TO '${VOLKSZ_USERNAME}'@'%'"
 mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "DROP USER 'root'@'%'"
 mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES"
