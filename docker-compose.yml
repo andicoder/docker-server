@@ -185,6 +185,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /root/.docker/config.json:/config.json
 
+  sbfspotvzsync:
+    build: ./sbfspotvzsync
+    restart: always
+    container_name: sbfspotvzsync
+    depends_on:
+      - mariadb
+
 volumes:
   conf:
   vhost:
