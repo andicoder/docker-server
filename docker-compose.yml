@@ -183,18 +183,21 @@ services:
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false  
 
-  watchtower:
-    image: v2tec/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /root/.docker/config.json:/config.json
-
   sbfspotvzsync:
     build: ./sbfspotvzsync
     restart: always
     container_name: sbfspotvzsync
     depends_on:
       - mariadb
+      
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-volume:/var/lib/grafana
 
 volumes:
   conf:
@@ -209,6 +212,7 @@ volumes:
   mailstate:
   nextcloud:
   sbfspot:
+  grafana-volume:
 
 # Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.
 #networks:
