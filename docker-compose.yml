@@ -205,6 +205,13 @@ services:
       - LETSENCRYPT_HOST=${GRAFANA_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=mail.***REMOVED***.de:587
+      - GF_SMTP_USER=andreas@***REMOVED***.de
+      - GF_SMTP_PASSWORD=sijqhHpwQA4ihV54
+      - GF_SMTP_FROM_ADDRESS=admin@***REMOVED***.de
+      - GF_SMTP_FROM_NAME=Admin
+      - GF_SERVER_ROOT_URL=https://${GRAFANA_DOMAIN}
 
 volumes:
   conf:
