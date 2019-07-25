@@ -213,6 +213,17 @@ services:
       - GF_SMTP_FROM_NAME=Admin
       - GF_SERVER_ROOT_URL=https://${GRAFANA_DOMAIN}
 
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    env_file:
+      - '.env.influxdb'
+    volumes:
+      - influxdb-volume:/var/lib/influxdb
+
+
 volumes:
   conf:
   vhost:
@@ -227,6 +238,7 @@ volumes:
   nextcloud:
   sbfspot:
   grafana-volume:
+  influxdb-volume:
 
 # Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.
 #networks:
