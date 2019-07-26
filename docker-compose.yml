@@ -98,7 +98,7 @@ services:
     restart: always
     container_name: mariadb-***REMOVED***
     ports:
-      - 3306:3306
+      - 10.8.0.2:3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
