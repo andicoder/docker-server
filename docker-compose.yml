@@ -218,11 +218,13 @@ services:
     container_name: influxdb
     ports:
       - "10.8.0.2:8086:8086"
+      - "10.8.0.2:25826:25826"
     env_file:
       - '.env.influxdb'
     volumes:
       - influxdb-volume:/var/lib/influxdb
-
+      - ./influxdb.conf:/etc/influxdb/influxdb.conf
+      - ./types.db:/usr/share/collectd/types.db:ro
 
 volumes:
   conf:
