@@ -94,7 +94,7 @@ services:
 
   mariadb:
     build: ./db
-    image: mariadb-***REMOVED***:latest
+    #image: mariadb-***REMOVED***:latest
     restart: always
     container_name: mariadb-***REMOVED***
     ports:
