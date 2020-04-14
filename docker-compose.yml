@@ -83,7 +83,7 @@ services:
       - ENABLE_SPAMASSASSIN=1
       - ENABLE_CLAMAV=1
       - ENABLE_FAIL2BAN=0
-      - ENABLE_POSTGREY=1
+      - ENABLE_POSTGREY=0
       - ENABLE_FETCHMAIL=1
       - ONE_DIR=1
       - DMS_DEBUG=0
@@ -111,6 +111,7 @@ services:
     volumes:
       - mysql:/var/lib/mysql
       - backup:/var/lib/backup
+      - ./mariadb-config:/etc/mysql/conf.d
 
   redis:
     image: redis
@@ -160,35 +161,35 @@ services:
       - mariadb
       - redis
       
-  sbfspot:
-    build: ./sbfspot
-    restart: always
-    container_name: sbfspotdaemon
-    volumes:
-      - sbfspot:/var/log/sbfspot
-    depends_on:
-      - mariadb
+#  sbfspot:
+#    build: ./sbfspot
+#    restart: always
+#    container_name: sbfspotdaemon
+#    volumes:
+#      - sbfspot:/var/log/sbfspot
+#    depends_on:
+#      - mariadb
       
-  volkszaehler:
-    image: ***REMOVED***/volkszaehler
-    container_name: volkszaehler
-    restart: always
-    ports:
-      - "8073:8080"
-    depends_on:
-      - mariadb
-    environment:
-      - VIRTUAL_HOST=${VZ_DOMAIN}
-      - LETSENCRYPT_HOST=${VZ_DOMAIN}
-      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-      - LETSENCRYPT_TEST=false  
+#  volkszaehler:
+#    image: ***REMOVED***/volkszaehler
+#    container_name: volkszaehler
+#    restart: always
+#    ports:
+#      - "8073:8080"
+#    depends_on:
+#      - mariadb
+#    environment:
+#      - VIRTUAL_HOST=${VZ_DOMAIN}
+#      - LETSENCRYPT_HOST=${VZ_DOMAIN}
+#      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+#      - LETSENCRYPT_TEST=false  
 
-  sbfspotvzsync:
-    build: ./sbfspotvzsync
-    restart: always
-    container_name: sbfspotvzsync
-    depends_on:
-      - mariadb
+#  sbfspotvzsync:
+#    build: ./sbfspotvzsync
+#    restart: always
+#    container_name: sbfspotvzsync
+#    depends_on:
+#      - mariadb
       
   grafana:
     image: grafana/grafana
@@ -252,7 +253,7 @@ volumes:
   maildata:
   mailstate:
   nextcloud:
-  sbfspot:
+#  sbfspot:
   grafana-volume:
   influxdb-volume:
 
