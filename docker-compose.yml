@@ -124,6 +124,10 @@ services:
     container_name: nextcloud-app
     volumes:
       - nextcloud:/var/www/html
+      - /data/nextcloud/data:/var/www/html/data
+      - /data/nextcloud/config:/var/www/html/config
+      - /data/nextcloud/custom_apps:/var/www/html/custom_apps
+      - /data/nextcloud/themes:/var/www/html/themes
     environment:
       - MYSQL_HOST=mariadb
       - MYSQL_DATABASE=${DB_NAME}
@@ -142,6 +146,10 @@ services:
       - 443
     volumes:
       - nextcloud:/var/www/html:ro
+      - /data/nextcloud/data:/var/www/html/data:ro
+      - /data/nextcloud/config:/var/www/html/config:ro
+      - /data/nextcloud/custom_apps:/var/www/html/custom_apps:ro
+      - /data/nextcloud/themes:/var/www/html/themes:ro
     depends_on:
       - app
     environment:
@@ -156,6 +164,10 @@ services:
     container_name: nextcloud-cron
     volumes:
       - nextcloud:/var/www/html
+      - /data/nextcloud/data:/var/www/html/data
+      - /data/nextcloud/config:/var/www/html/config
+      - /data/nextcloud/custom_apps:/var/www/html/custom_apps
+      - /data/nextcloud/themes:/var/www/html/themes
     entrypoint: /cron.sh
     depends_on:
       - mariadb
