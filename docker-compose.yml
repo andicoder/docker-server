@@ -79,7 +79,7 @@ services:
       - /data/mail/state:/var/mail-state
       - ./mail/:/tmp/docker-mailserver/
       - certs:/etc/letsencrypt/live/
-   environment:
+    environment:
       - ENABLE_SPAMASSASSIN=1
       - ENABLE_CLAMAV=1
       - ENABLE_FAIL2BAN=0
