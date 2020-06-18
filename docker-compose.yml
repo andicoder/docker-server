@@ -5,7 +5,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx-proxy
-    restart: always
+#    restart: always
     ports:
       - "80:80"
       - "443:443"
@@ -20,7 +20,7 @@ services:
   dockergen:
     image: jwilder/docker-gen:0.7.3
     container_name: nginx-proxy-gen
-    restart: always
+#    restart: always
     depends_on:
       - nginx
     command: -notify-sighup nginx-proxy -watch -wait 5s:30s /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
@@ -51,7 +51,7 @@ services:
 
   webmail:
     image: nginx:1.13.1
-    restart: always
+#    restart: always
     container_name: webmail
     depends_on:
       - letsencrypt
@@ -75,11 +75,11 @@ services:
       - "587:587"
       - "993:993"
     volumes:
-      - maildata:/var/mail
-      - mailstate:/var/mail-state
-      - ./config/:/tmp/docker-mailserver/
+      - /data/mail/data:/var/mail
+      - /data/mail/state:/var/mail-state
+      - ./mail/:/tmp/docker-mailserver/
       - certs:/etc/letsencrypt/live/
-    environment:
+   environment:
       - ENABLE_SPAMASSASSIN=1
       - ENABLE_CLAMAV=1
       - ENABLE_FAIL2BAN=0
@@ -93,24 +93,23 @@ services:
       - SYS_PTRACE
 
   mariadb:
-    build: ./db
-    #image: mariadb-***REMOVED***:latest
-    restart: always
+    image: mariadb:latest
+#    restart: always
     container_name: mariadb-***REMOVED***
     ports:
-      - 10.8.0.2:3306:3306
+      - 10.7.0.1:3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_USER=${DB_USERNAME}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - SBFSPOT_USERNAME=${DB_SBFSPOT_USERNAME}
-      - SBFSPOT_PASSWORD=${DB_SBFSPOT_PASSWORD}
-      - VOLKSZ_USERNAME=${DB_VOLKSZ_USERNAME}
-      - VOLKSZ_PASSWORD=${DB_VOLKSZ_PASSWORD}
+#     - MYSQL_DATABASE=${DB_NAME}
+#     - MYSQL_USER=${DB_USERNAME}
+#     - MYSQL_PASSWORD=${DB_PASSWORD}
+#     - SBFSPOT_USERNAME=${DB_SBFSPOT_USERNAME}
+#     - SBFSPOT_PASSWORD=${DB_SBFSPOT_PASSWORD}
+#     - VOLKSZ_USERNAME=${DB_VOLKSZ_USERNAME}
+#     - VOLKSZ_PASSWORD=${DB_VOLKSZ_PASSWORD}
     volumes:
-      - mysql:/var/lib/mysql
-      - backup:/var/lib/backup
+      - /data/mysql:/var/lib/mysql
+      - /data/mysql-backup:/var/lib/backup
       - ./mariadb-config:/etc/mysql/conf.d
 
   redis:
@@ -118,9 +117,9 @@ services:
     restart: always
     container_name: redis
 
-  app:
-    build: ./app
-    restart: always
+  nextcloud-app:
+    build: ./nextcloud-app
+#    restart: always
     container_name: nextcloud-app
     volumes:
       - nextcloud:/var/www/html
@@ -138,9 +137,9 @@ services:
       - redis
       - letsencrypt
 
-  web:
+  nextcloud-web:
     build: ./web
-    restart: always
+#    restart: always
     container_name: nextcloud-web
     expose:
       - 443
@@ -151,16 +150,16 @@ services:
       - /data/nextcloud/custom_apps:/var/www/html/custom_apps:ro
       - /data/nextcloud/themes:/var/www/html/themes:ro
     depends_on:
-      - app
+      - nextcloud-app
     environment:
       - VIRTUAL_HOST=${OC_DOMAIN}
       - LETSENCRYPT_HOST=${OC_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false
 
-  cron:
-    build: ./app
-    restart: always
+  nextcloud-cron:
+    build: ./nextcloud-app
+#    restart: always
     container_name: nextcloud-cron
     volumes:
       - nextcloud:/var/www/html
@@ -173,44 +172,14 @@ services:
       - mariadb
       - redis
       
-#  sbfspot:
-#    build: ./sbfspot
-#    restart: always
-#    container_name: sbfspotdaemon
-#    volumes:
-#      - sbfspot:/var/log/sbfspot
-#    depends_on:
-#      - mariadb
-      
-#  volkszaehler:
-#    image: ***REMOVED***/volkszaehler
-#    container_name: volkszaehler
-#    restart: always
-#    ports:
-#      - "8073:8080"
-#    depends_on:
-#      - mariadb
-#    environment:
-#      - VIRTUAL_HOST=${VZ_DOMAIN}
-#      - LETSENCRYPT_HOST=${VZ_DOMAIN}
-#      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-#      - LETSENCRYPT_TEST=false  
-
-#  sbfspotvzsync:
-#    build: ./sbfspotvzsync
-#    restart: always
-#    container_name: sbfspotvzsync
-#    depends_on:
-#      - mariadb
-      
   grafana:
     image: grafana/grafana
     container_name: grafana
-    restart: always
+#    restart: always
     ports:
       - "3000:3000"
     volumes:
-      - grafana-volume:/var/lib/grafana
+      - /data/grafana:/var/lib/grafana
     depends_on:
       - letsencrypt
     environment:
@@ -230,44 +199,30 @@ services:
     image: influxdb:latest
     container_name: influxdb
     ports:
-      - "10.8.0.2:8086:8086"
-      - "10.8.0.2:25826:25826"
+      - "10.7.0.1:8086:8086"
+      - "10.7.0.1:25826:25826"
     env_file:
       - '.env.influxdb'
     volumes:
-      - influxdb-volume:/var/lib/influxdb
-      - ./influxdb.conf:/etc/influxdb/influxdb.conf
-      - ./types.db:/usr/share/collectd/types.db:ro
-
-#  plex:
-#    image: linuxserver/plex
-#    container_name: plex
-#    network_mode: host
-#    environment:
-#      - PUID=1000
-#      - PGID=1000
-#      - VERSION=docker
-#      - UMASK_SET=022 #optional
-#    volumes:
-#      - ./plex-config/:/config
-#      - /media/cifs/video:/video
-#    restart: unless-stopped
+      - /data/influxdb:/var/lib/influxdb
+      - ./influx/influxdb.conf:/etc/influxdb/influxdb.conf
+      - ./influx/types.db:/usr/share/collectd/types.db:ro
 
 volumes:
   conf:
   vhost:
   html:
   certs:
-  files:
-  mysql:
-  backup:
-  redis:
-  maildata:
-  mailstate:
-  nextcloud:
+#  files:
+#  mysql:
+#  backup:
+#  redis:
+#  maildata:
+#  mailstate:
+#  nextcloud:
 #  sbfspot:
-  grafana-volume:
-  influxdb-volume:
+#  grafana-volume:
+#  influxdb-volume:
 
 # Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.
 #networks:
