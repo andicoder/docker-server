@@ -138,7 +138,7 @@ services:
       - letsencrypt
 
   nextcloud-web:
-    build: ./web
+    build: ./nextcloud-web
 #    restart: always
     container_name: nextcloud-web
     expose:
@@ -219,7 +219,7 @@ volumes:
 #  redis:
 #  maildata:
 #  mailstate:
-#  nextcloud:
+  nextcloud:
 #  sbfspot:
 #  grafana-volume:
 #  influxdb-volume:
