@@ -217,6 +217,7 @@ services:
       - 80
     depends_on:
       - letsencrypt
+      - mariadb
     environment:
       - VIRTUAL_HOST=${BITWARDEN_DOMAIN}
       - VIRTUAL_PORT=80
@@ -225,7 +226,7 @@ services:
       - LETSENCRYPT_TEST=false
       - ADMIN_TOKEN=${BITWARDEN_ADMIN_TOKEN}
       - WEBSOCKET_ENABLED=true
-
+      - DATABASE_URL=${BITWARDEN_DATABASE_URL}
 
 volumes:
   conf:
