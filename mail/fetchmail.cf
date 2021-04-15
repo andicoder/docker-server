@@ -15,10 +15,3 @@ poll 'pop.gmx.de' proto pop3
         pass 'SGDynamo1953'
         is 'bettina@***REMOVED***.de'
         ssl
-
-poll 'imap.gmail.com' proto imap
-        user 'philikoerner@gmail.com'
-        pass 'strassenbahn'
-        is 'philipp@***REMOVED***.de'
-        ssl
-
