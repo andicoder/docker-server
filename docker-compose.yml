@@ -208,6 +208,20 @@ services:
       - ./influx/influxdb.conf:/etc/influxdb/influxdb.conf
       - ./influx/types.db:/usr/share/collectd/types.db:ro
 
+  bitwardenrs:
+    image: bitwardenrs/server:latest
+    container_name: bitwardenrs
+    volumes:
+      - /data/bitwarden:/data
+    depends_on:
+      - letsencrypt
+    environment:
+      - VIRTUAL_HOST=${BITWARDEN_DOMAIN}
+      - LETSENCRYPT_HOST=${BITWARDEN_DOMAIN}
+      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+      - LETSENCRYPT_TEST=false
+
+
 volumes:
   conf:
   vhost:
