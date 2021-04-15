@@ -219,6 +219,7 @@ services:
       - letsencrypt
     environment:
       - VIRTUAL_HOST=${BITWARDEN_DOMAIN}
+      - VIRTUAL_PORT=80
       - LETSENCRYPT_HOST=${BITWARDEN_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false
