@@ -213,6 +213,8 @@ services:
     container_name: bitwardenrs
     volumes:
       - /data/bitwarden:/data
+    expose:
+      - 80
     depends_on:
       - letsencrypt
     environment:
