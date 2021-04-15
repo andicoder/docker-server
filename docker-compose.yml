@@ -223,6 +223,8 @@ services:
       - LETSENCRYPT_HOST=${BITWARDEN_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false
+      - ADMIN_TOKEN=${BITWARDEN_ADMIN_TOKEN}
+      - WEBSOCKET_ENABLED=true
 
 
 volumes:
