@@ -61,39 +61,39 @@ services:
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false
 
-  mail:
-    image: tvial/docker-mailserver:latest
-    restart: always
-    hostname: mail
-    domainname: ***REMOVED***.de
-    container_name: mail
-    depends_on:
-      - letsencrypt
-    ports:
-      - "25:25"
-      - "143:143"
-      - "587:587"
-      - "993:993"
-    volumes:
-      - /data/mail/data:/var/mail
-      - /data/mail/state:/var/mail-state
-      - ./mail/:/tmp/docker-mailserver/
-      - certs:/etc/letsencrypt/live/
-    environment:
-      - ENABLE_SPAMASSASSIN=1
-      - ENABLE_CLAMAV=1
-      - ENABLE_FAIL2BAN=0
-      - ENABLE_POSTGREY=0
-      - ENABLE_FETCHMAIL=1
-      - ONE_DIR=1
-      - DMS_DEBUG=0
-      - SSL_TYPE=letsencrypt
-    cap_add:
-      - NET_ADMIN
-      - SYS_PTRACE
+#  mail:
+#    image: tvial/docker-mailserver:latest
+#    restart: always
+#    hostname: mail
+#    domainname: ***REMOVED***.de
+#    container_name: mail
+#    depends_on:
+#      - letsencrypt
+#    ports:
+#      - "25:25"
+#      - "143:143"
+#      - "587:587"
+#      - "993:993"
+#    volumes:
+#      - /data/mail/data:/var/mail
+#      - /data/mail/state:/var/mail-state
+#      - ./mail/:/tmp/docker-mailserver/
+#      - certs:/etc/letsencrypt/live/
+#    environment:
+#      - ENABLE_SPAMASSASSIN=1
+#      - ENABLE_CLAMAV=1
+#      - ENABLE_FAIL2BAN=0
+#      - ENABLE_POSTGREY=0
+#      - ENABLE_FETCHMAIL=1
+#      - ONE_DIR=1
+#      - DMS_DEBUG=0
+#      - SSL_TYPE=letsencrypt
+#    cap_add:
+#      - NET_ADMIN
+#      - SYS_PTRACE
 
   mariadb:
-    image: mariadb:latest
+    image: mariadb:10.5
 #    restart: always
     container_name: mariadb-***REMOVED***
     ports:

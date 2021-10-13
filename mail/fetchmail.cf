@@ -1,6 +1,6 @@
 poll 'imap.gmail.com' proto imap
 	user 'ankoerner@gmail.com'
-	pass 'ctxsfourbmjfllbi'
+	pass 'hKmxTzbbH6Qbiz'
 	is 'andreas@***REMOVED***.de'
 	ssl
 
