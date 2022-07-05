@@ -49,17 +49,17 @@ services:
       - certs:/etc/nginx/certs
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  webmail:
-    image: nginx:1.13.1
+#  webmail:
+#    image: nginx:1.13.1
 #    restart: always
-    container_name: webmail
-    depends_on:
-      - letsencrypt
-    environment:
-      - VIRTUAL_HOST=${MAIL_DOMAIN}
-      - LETSENCRYPT_HOST=${MAIL_DOMAIN}
-      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-      - LETSENCRYPT_TEST=false
+#    container_name: webmail
+#    depends_on:
+#      - letsencrypt
+#    environment:
+#      - VIRTUAL_HOST=${MAIL_DOMAIN}
+#      - LETSENCRYPT_HOST=${MAIL_DOMAIN}
+#      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+#      - LETSENCRYPT_TEST=false
 
 #  mail:
 #    image: tvial/docker-mailserver:latest
