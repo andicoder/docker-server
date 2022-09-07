@@ -245,9 +245,9 @@ services:
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false
 
-  searx:
+  searxng:
     image: searxng/searxng:latest
-    container_name: searx
+    container_name: searxng
     volumes:
       - ./searxng:/etc/searxng"
     expose:
