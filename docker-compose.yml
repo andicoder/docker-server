@@ -233,13 +233,14 @@ services:
     container_name: yacy-search-server
     volumes:
       - /data/yacy_search_server:/opt/yacy_search_server/DATA
-    expose:
-      - 80
+    ports:
+      - 8090:8090
+      - 8443:8443
     depends_on:
       - letsencrypt
     environment:
       - VIRTUAL_HOST=${YACY_DOMAIN}
-      - VIRTUAL_PORT=80
+      - VIRTUAL_PORT=8090
       - LETSENCRYPT_HOST=${YACY_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false
