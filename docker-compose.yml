@@ -245,6 +245,23 @@ services:
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false
 
+  searx:
+    image: searxng/searxng:latest
+    container_name: searx
+    volumes:
+      - ./searxng:/etc/searxng"
+    expose:
+      - 8080
+    depends_on:
+      - letsencrypt
+    environment:
+      - VIRTUAL_HOST=${SEARX_DOMAIN}
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=${SEARX_DOMAIN}
+      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+      - LETSENCRYPT_TEST=false
+      - BASE_URL=${SEARX_DOMAIN}
+
 volumes:
   conf:
   vhost:
