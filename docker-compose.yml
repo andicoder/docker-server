@@ -228,39 +228,39 @@ services:
       - WEBSOCKET_ENABLED=true
       - DATABASE_URL=${BITWARDEN_DATABASE_URL}
 
-  yacy-search-server:
-    image: yacy/yacy_search_server:latest
-    container_name: yacy-search-server
-    volumes:
-      - /data/yacy_search_server:/opt/yacy_search_server/DATA
-    ports:
-      - 8090:8090
-      - 8443:8443
-    depends_on:
-      - letsencrypt
-    environment:
-      - VIRTUAL_HOST=${YACY_DOMAIN}
-      - VIRTUAL_PORT=8090
-      - LETSENCRYPT_HOST=${YACY_DOMAIN}
-      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-      - LETSENCRYPT_TEST=false
+#  yacy-search-server:
+#    image: yacy/yacy_search_server:latest
+#    container_name: yacy-search-server
+#    volumes:
+#      - /data/yacy_search_server:/opt/yacy_search_server/DATA
+#    ports:
+#      - 8090:8090
+#      - 8443:8443
+#    depends_on:
+#      - letsencrypt
+#    environment:
+#      - VIRTUAL_HOST=${YACY_DOMAIN}
+#      - VIRTUAL_PORT=8090
+#      - LETSENCRYPT_HOST=${YACY_DOMAIN}
+#      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+#      - LETSENCRYPT_TEST=false
 
   searxng:
     image: searxng/searxng:latest
     container_name: searxng
     volumes:
-      - ./searxng:/etc/searxng"
+      - ./searxng:/etc/searxng
     expose:
       - 8080
     depends_on:
       - letsencrypt
     environment:
-      - VIRTUAL_HOST=${SEARX_DOMAIN}
+      - VIRTUAL_HOST=${SEARXNG_DOMAIN}
       - VIRTUAL_PORT=8080
-      - LETSENCRYPT_HOST=${SEARX_DOMAIN}
+      - LETSENCRYPT_HOST=${SEARXNG_DOMAIN}
       - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
       - LETSENCRYPT_TEST=false
-      - BASE_URL=${SEARX_DOMAIN}
+      - BASE_URL=https://${SEARXNG_DOMAIN}
 
 volumes:
   conf:
