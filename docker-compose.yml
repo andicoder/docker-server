@@ -209,7 +209,7 @@ services:
 #      - ./influx/types.db:/usr/share/collectd/types.db:ro
 
   bitwardenrs:
-    image: bitwardenrs/server:latest
+    image: vaultwarden/server:latest
     container_name: bitwardenrs
     volumes:
       - /data/bitwarden:/data
@@ -245,22 +245,22 @@ services:
 #      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
 #      - LETSENCRYPT_TEST=false
 
-  searxng:
-    image: searxng/searxng:latest
-    container_name: searxng
-    volumes:
-      - ./searxng:/etc/searxng
-    expose:
-      - 8080
-    depends_on:
-      - letsencrypt
-    environment:
-      - VIRTUAL_HOST=${SEARXNG_DOMAIN}
-      - VIRTUAL_PORT=8080
-      - LETSENCRYPT_HOST=${SEARXNG_DOMAIN}
-      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-      - LETSENCRYPT_TEST=false
-      - BASE_URL=https://${SEARXNG_DOMAIN}
+#  searxng:
+#    image: searxng/searxng:latest
+#    container_name: searxng
+#    volumes:
+#      - ./searxng:/etc/searxng
+#    expose:
+#      - 8080
+#    depends_on:
+#      - letsencrypt
+#    environment:
+#      - VIRTUAL_HOST=${SEARXNG_DOMAIN}
+#      - VIRTUAL_PORT=8080
+#      - LETSENCRYPT_HOST=${SEARXNG_DOMAIN}
+#      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+#      - LETSENCRYPT_TEST=false
+#      - BASE_URL=https://${SEARXNG_DOMAIN}
 
 volumes:
   conf:
