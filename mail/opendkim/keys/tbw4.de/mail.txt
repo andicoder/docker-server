@@ -1,2 +1,0 @@
-mail._domainkey	IN	TXT	( "v=DKIM1; h=sha256; k=rsa; "
-	  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDHNvtMz48IUq1xF7RISShXkOFl9rKBdvd0Cob1iGRJmgezcAv8okkKp+0AfHAyhsuKVhaIZyp1UxegRlx6ASx2fwRVX+z+qA2IjClWOn97MwsC/BRxUWAJ42ebiXcwHW1ij0FU85YLgJAzEf2u5Cnu3PyDwzeN8yqgiyrDa+HKiQIDAQAB" )  ; ----- DKIM key mail for ***REMOVED***.de
