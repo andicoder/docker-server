@@ -49,49 +49,6 @@ services:
       - /data/nginx/certs:/etc/nginx/certs
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-#  webmail:
-#    image: nginx:1.13.1
-#    restart: always
-#    container_name: webmail
-#    depends_on:
-#      - letsencrypt
-#    environment:
-#      - VIRTUAL_HOST=${MAIL_DOMAIN}
-#      - LETSENCRYPT_HOST=${MAIL_DOMAIN}
-#      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-#      - LETSENCRYPT_TEST=false
-
-#  mail:
-#    image: tvial/docker-mailserver:latest
-#    restart: always
-#    hostname: mail
-#    domainname: ***REMOVED***.de
-#    container_name: mail
-#    depends_on:
-#      - letsencrypt
-#    ports:
-#      - "25:25"
-#      - "143:143"
-#      - "587:587"
-#      - "993:993"
-#    volumes:
-#      - /data/mail/data:/var/mail
-#      - /data/mail/state:/var/mail-state
-#      - ./mail/:/tmp/docker-mailserver/
-#      - certs:/etc/letsencrypt/live/
-#    environment:
-#      - ENABLE_SPAMASSASSIN=1
-#      - ENABLE_CLAMAV=1
-#      - ENABLE_FAIL2BAN=0
-#      - ENABLE_POSTGREY=0
-#      - ENABLE_FETCHMAIL=1
-#      - ONE_DIR=1
-#      - DMS_DEBUG=0
-#      - SSL_TYPE=letsencrypt
-#    cap_add:
-#      - NET_ADMIN
-#      - SYS_PTRACE
-
   mariadb:
     image: mariadb:10.5
     restart: always
@@ -100,13 +57,6 @@ services:
 #      - 10.7.0.1:3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-#     - MYSQL_DATABASE=${DB_NAME}
-#     - MYSQL_USER=${DB_USERNAME}
-#     - MYSQL_PASSWORD=${DB_PASSWORD}
-#     - SBFSPOT_USERNAME=${DB_SBFSPOT_USERNAME}
-#     - SBFSPOT_PASSWORD=${DB_SBFSPOT_PASSWORD}
-#     - VOLKSZ_USERNAME=${DB_VOLKSZ_USERNAME}
-#     - VOLKSZ_PASSWORD=${DB_VOLKSZ_PASSWORD}
     volumes:
       - /data/mysql:/var/lib/mysql
       - /data/mysql-backup:/var/lib/backup
@@ -172,42 +122,6 @@ services:
       - mariadb
       - redis
       
-#  grafana:
-#    image: grafana/grafana
-#    container_name: grafana
-#    restart: always
-#    ports:
-#      - "3000:3000"
-#    volumes:
-#      - /data/grafana:/var/lib/grafana
-#    depends_on:
-#      - letsencrypt
-#    environment:
-#      - VIRTUAL_HOST=${GRAFANA_DOMAIN}
-#      - LETSENCRYPT_HOST=${GRAFANA_DOMAIN}
-#      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-#      - LETSENCRYPT_TEST=false
-#      - GF_SMTP_ENABLED=true
-#      - GF_SMTP_HOST=mail.***REMOVED***.de:587
-#      - GF_SMTP_USER=andreas@***REMOVED***.de
-#      - GF_SMTP_PASSWORD=sijqhHpwQA4ihV54
-#      - GF_SMTP_FROM_ADDRESS=admin@***REMOVED***.de
-#      - GF_SMTP_FROM_NAME=Admin
-#      - GF_SERVER_ROOT_URL=https://${GRAFANA_DOMAIN}
-
-#  influxdb:
-#    image: influxdb:latest
-#    container_name: influxdb
-#    ports:
-#      - "10.7.0.1:8086:8086"
-#      - "10.7.0.1:25826:25826"
-#    env_file:
-#      - '.env.influxdb'
-#    volumes:
-#      - /data/influxdb:/var/lib/influxdb
-#      - ./influx/influxdb.conf:/etc/influxdb/influxdb.conf
-#      - ./influx/types.db:/usr/share/collectd/types.db:ro
-
   bitwardenrs:
     image: vaultwarden/server:latest
     container_name: bitwardenrs
@@ -229,59 +143,53 @@ services:
       - WEBSOCKET_ENABLED=true
       - DATABASE_URL=${BITWARDEN_DATABASE_URL}
 
-#  yacy-search-server:
-#    image: yacy/yacy_search_server:latest
-#    container_name: yacy-search-server
-#    volumes:
-#      - /data/yacy_search_server:/opt/yacy_search_server/DATA
-#    ports:
-#      - 8090:8090
-#      - 8443:8443
-#    depends_on:
-#      - letsencrypt
-#    environment:
-#      - VIRTUAL_HOST=${YACY_DOMAIN}
-#      - VIRTUAL_PORT=8090
-#      - LETSENCRYPT_HOST=${YACY_DOMAIN}
-#      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-#      - LETSENCRYPT_TEST=false
 
-#  searxng:
-#    image: searxng/searxng:latest
-#    container_name: searxng
-#    volumes:
-#      - ./searxng:/etc/searxng
-#    expose:
-#      - 8080
-#    depends_on:
-#      - letsencrypt
-#    environment:
-#      - VIRTUAL_HOST=${SEARXNG_DOMAIN}
-#      - VIRTUAL_PORT=8080
-#      - LETSENCRYPT_HOST=${SEARXNG_DOMAIN}
-#      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
-#      - LETSENCRYPT_TEST=false
-#      - BASE_URL=https://${SEARXNG_DOMAIN}
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless
+    restart: unless-stopped
+    depends_on:
+      - letsencrypt
+      - mariadb
+      - redis
+    ports:
+      - "8000:8000"
+    volumes:
+      - /data/paperless/data:/usr/src/paperless/data
+      - /data/paperless/media:/usr/src/paperless/media
+      - /data/paperless/export:/usr/src/paperless/export
+      - /data/paperless/incoming:/usr/src/paperless/consume
+    env_file: paperless.env
+    environment:
+      - LANG=de_DE.UTF-8  
+      - LANGUAGE=de_DE.UTF-8 
+      - PAPERLESS_REDIS=redis://redis:6379
+      - PAPERLESS_DBENGINE=mariadb
+      - PAPERLESS_DBHOST=mariadb-***REMOVED***
+      - PAPERLESS_DBUSER=paperless
+      - PAPERLESS_DBPASS=***REMOVED***
+      - PAPERLESS_DBPORT=3306
+      - VIRTUAL_HOST=${PAPERLESS_DOMAIN}
+      - LETSENCRYPT_HOST=${PAPERLESS_DOMAIN}
+      - LETSENCRYPT_EMAIL=admin@***REMOVED***.de
+      - LETSENCRYPT_TEST=false
+      - PAPERLESS_TIKA_ENABLED=1
+      - PAPERLESS_TIKA_GOTENBERG_ENDPOINT=http://gotenberg:3000
+      - PAPERLESS_TIKA_ENDPOINT=http://tika:9998
 
-volumes:
-  conf:
-  vhost:
-  html:
-  certs:
-#  files:
-#  mysql:
-#  backup:
-#  redis:
-#  maildata:
-#  mailstate:
-#  nextcloud:
-#  sbfspot:
-#  grafana-volume:
-#  influxdb-volume:
+  gotenberg:
+    image: docker.io/gotenberg/gotenberg:7.10
+    container_name: gotenberg
+    restart: unless-stopped
 
-# Do not forget to 'docker network create nginx-proxy' before launch, and to add '--network nginx-proxy' to proxied containers.
-#networks:
-#  default:
-#    external:
-#      name: nginx-proxy
+    # The gotenberg chromium route is used to convert .eml files. We do not
+    # want to allow external content like tracking pixels or even javascript.
+    command:
+      - "gotenberg"
+      - "--chromium-disable-javascript=true"
+      - "--chromium-allow-list=file:///tmp/.*"
 
+  tika:
+    image: ghcr.io/paperless-ngx/tika:latest
+    container_name: tika
+    restart: unless-stopped
