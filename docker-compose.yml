@@ -13,6 +13,7 @@ services:
       - /data/nginx/html:/usr/share/nginx/html
       - /data/nginx/certs:/etc/nginx/certs
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/conf.d/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro
 
   letsencrypt:
     image: nginxproxy/acme-companion
@@ -169,3 +170,14 @@ services:
     image: ghcr.io/paperless-ngx/tika:latest
     container_name: tika
     restart: unless-stopped
+
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - /data/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
