@@ -45,7 +45,11 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
    ```
 
 2. **Create environment variables**
-   Create a `.env` file in the root directory with the following variables:
+   Copy the template and create a `.env` file in the root directory:
+   ```bash
+   cp env.template .env
+   ```
+   Then edit the `.env` file with your values:
 
    ```bash
    # Database Configuration

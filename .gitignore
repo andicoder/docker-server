@@ -5,7 +5,6 @@
 .env.staging
 
 # Sensitive configuration files
-paperless.env
 secrets/
 *.key
 *.pem
