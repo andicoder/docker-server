@@ -49,26 +49,41 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
    ```bash
    cp env.template .env
    ```
-   Then edit the `.env` file with your values:
+   Then edit the `.env` file with your values. The template includes all necessary variables:
 
    ```bash
    # Database Configuration
-   DB_ROOT_PASSWORD=your_secure_root_password
+   DB_ROOT_PASSWORD=your_secure_root_password_here
    DB_NAME=nextcloud
    DB_USERNAME=nextcloud_user
-   DB_PASSWORD=your_secure_db_password
+   DB_PASSWORD=your_secure_db_password_here
 
-   # Nextcloud Configuration
+   # Service Domains
    OC_DOMAIN=your-nextcloud-domain.com
+   BITWARDEN_DOMAIN=your-bitwarden-domain.com
+   PAPERLESS_DOMAIN=your-paperless-domain.com
 
    # Bitwarden Configuration
-   BITWARDEN_DOMAIN=your-bitwarden-domain.com
-   BITWARDEN_ADMIN_TOKEN=your_admin_token
-   BITWARDEN_DATABASE_URL=mysql://bitwarden_user:password@mariadb:3306/bitwarden
+   BITWARDEN_ADMIN_TOKEN=your_admin_token_here
+   BITWARDEN_DATABASE_URL=mysql://bitwarden_user:your_bitwarden_db_password@mariadb:3306/bitwarden
 
-   # Paperless Configuration
-   PAPERLESS_DOMAIN=your-paperless-domain.com
-   
+   # Paperless Database Configuration
+   PAPERLESS_DBUSER=paperless
+   PAPERLESS_DBPASS=your_paperless_db_password_here
+   PAPERLESS_DBPORT=3306
+
+   # Paperless Advanced Configuration
+   USERMAP_UID=1003
+   USERMAP_GID=1003
+   PAPERLESS_OCR_LANGUAGES=deu
+   PAPERLESS_OCR_LANGUAGE=deu
+   PAPERLESS_TIME_ZONE=Europe/Berlin
+   PAPERLESS_SECRET_KEY=your_very_long_random_secret_key_here
+   PAPERLESS_CONSUMER_ASN_BARCODE_PREFIX=ASN
+   PAPERLESS_CONSUMER_ENABLE_ASN_BARCODE=true
+   PAPERLESS_CONSUMER_ENABLE_BARCODES=true
+   PAPERLESS_CONSUMER_BARCODE_SCANNER=ZXING
+
    # Admin Configuration
    ADMIN_EMAIL=admin@your-domain.com
    ```
@@ -87,6 +102,14 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
    ```
 
 ## 🔧 Configuration
+
+### Environment Variables
+The project includes an `env.template` file with all necessary environment variables. This template:
+- Contains all required variables for all services
+- Includes security best practices (placeholder passwords)
+- Provides German language support for Paperless
+- Includes Paperless OCR and consumer settings
+- Has proper UID/GID mapping for file permissions
 
 ### MariaDB Configuration
 
