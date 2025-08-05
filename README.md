@@ -33,6 +33,7 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
 - Domain names configured for your services
 - Proper DNS setup pointing to your server
 - Sufficient storage space (recommended: 100GB+)
+- WireGuard VPN setup for internal services (Home Assistant, AdGuard Home)
 
 ## 🛠️ Installation
 
@@ -59,10 +60,13 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
    # Bitwarden Configuration
    BITWARDEN_DOMAIN=your-bitwarden-domain.com
    BITWARDEN_ADMIN_TOKEN=your_admin_token
-   BITWARDEN_DATABASE_URL=mysql://bitwarden_user:your_bitwarden_db_password@mariadb-***REMOVED***:3306/bitwarden
+   BITWARDEN_DATABASE_URL=mysql://bitwarden_user:your_bitwarden_db_password@mariadb:3306/bitwarden
 
    # Paperless Configuration
    PAPERLESS_DOMAIN=your-paperless-domain.com
+   
+   # Admin Configuration
+   ADMIN_EMAIL=admin@your-domain.com
    ```
 
 3. **Create required directories**
@@ -136,11 +140,11 @@ All data is persisted in the `/data` directory:
 
 ## 🚨 Important Notes
 
-- The MariaDB service is configured to bind to a specific IP (10.7.0.1) - adjust this in the docker-compose.yml if needed
 - AdGuard Home runs in host network mode for DNS functionality
 - Home Assistant runs in host network mode for device discovery
 - All services use automatic SSL certificate management via Let's Encrypt
 - **Home Assistant and AdGuard Home are only accessible from the internal WireGuard network**, secured by UFW firewall rules
+- The nginx proxy uses a custom template (`nginx.tmpl`) for configuration
 
 ## 🔄 Maintenance
 
@@ -158,13 +162,16 @@ docker-compose up -d
 
 ```bash
 # Backup MariaDB
-docker exec mariadb-***REMOVED***mysqldump -u root -p --all-databases > backup.sql
+docker exec mariadb mysqldump -u root -p --all-databases > backup.sql
 
 # Backup Nextcloud data
 tar -czf nextcloud-backup.tar.gz /data/nextcloud
 
 # Backup Paperless data
 tar -czf paperless-backup.tar.gz /data/paperless
+
+# Backup Bitwarden data
+tar -czf bitwarden-backup.tar.gz /data/bitwarden
 ```
 
 ### Logs
