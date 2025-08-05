@@ -1,4 +1,36 @@
+# Environment files
 .env
-.env.save
-config.bak
+.env.local
+.env.production
+.env.staging
+
+# Sensitive configuration files
+paperless.env
+secrets/
+*.key
+*.pem
+*.crt
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# Temporary files
+*.tmp
+*.temp
+bfg.jar
+sensitive-data.txt
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
