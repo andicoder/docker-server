@@ -215,6 +215,7 @@ services:
       - MQTT_HOST=${MQTT_HOST}
       - MQTT_USERNAME=${MQTT_USERNAME}
       - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - TZ=Europe/Berlin
     ports:
       - 4000:4000
     volumes:
@@ -247,4 +248,7 @@ services:
     ports:
       - 4001:3000
     volumes:
-      - /data/teslamate-grafana:/var/lib/grafana
+      - teslamate-grafana-data:/var/lib/grafana
+
+volumes:
+  teslamate-grafana-data:
