@@ -199,3 +199,52 @@ services:
       - /data/adguard/work:/opt/adguardhome/work
       - /data/adguard/conf:/opt/adguardhome/conf
     network_mode: host
+
+  teslamate:
+    container_name: teslamate
+    image: teslamate/teslamate:latest
+    restart: unless-stopped
+    depends_on:
+      - teslamate-database
+    environment:
+      - ENCRYPTION_KEY=${TESLAMATE_ENCRYPTION_KEY}
+      - DATABASE_USER=teslamate
+      - DATABASE_PASS=${TESLAMATE_DATABASE_PASS}
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=teslamate-database
+      - MQTT_HOST=${MQTT_HOST}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+    ports:
+      - 4000:4000
+    volumes:
+      - /data/teslamate/import:/opt/app/import
+    cap_drop:
+      - all
+
+  teslamate-database:
+    container_name: teslamate-database
+    image: postgres:17-trixie
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=teslamate
+      - POSTGRES_PASSWORD=${TESLAMATE_DATABASE_PASS}
+      - POSTGRES_DB=teslamate
+    volumes:
+      - /data/teslamate-postgres/data:/var/lib/postgresql/data
+
+  teslamate-grafana:
+    container_name: teslamate-grafana
+    image: teslamate/grafana:latest
+    restart: unless-stopped
+    depends_on:
+      - teslamate-database
+    environment:
+      - DATABASE_USER=teslamate
+      - DATABASE_PASS=${TESLAMATE_DATABASE_PASS}
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=teslamate-database
+    ports:
+      - 4001:3000
+    volumes:
+      - /data/teslamate-grafana:/var/lib/grafana
