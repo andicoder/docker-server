@@ -1,4 +1,4 @@
-version: '2'
+version: '3.8'
 
 services:
 
@@ -24,8 +24,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/nginx/acme:/etc/acme.sh
-    volumes_from:
-      - nginx
+      - /data/nginx/html:/usr/share/nginx/html
+      - /data/nginx/certs:/etc/nginx/certs
 
   mariadb:
     image: mariadb:10.5
@@ -209,7 +209,9 @@ services:
       - MQTT_PASSWORD=${MQTT_PASSWORD}
       - TZ=Europe/Berlin
     ports:
-      - ${HOST_IP}:4000:4000
+      - target: 4000
+        published: 4000
+        host_ip: ${HOST_IP}
     volumes:
       - /data/teslamate/import:/opt/app/import
     cap_drop:
@@ -238,7 +240,9 @@ services:
       - DATABASE_NAME=teslamate
       - DATABASE_HOST=teslamate-database
     ports:
-      - ${HOST_IP}:4001:3000
+      - target: 3000
+        published: 4001
+        host_ip: ${HOST_IP}
     volumes:
       - teslamate-grafana-data:/var/lib/grafana
 
