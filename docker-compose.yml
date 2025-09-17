@@ -209,9 +209,7 @@ services:
       - MQTT_PASSWORD=${MQTT_PASSWORD}
       - TZ=Europe/Berlin
     ports:
-      - target: 4000
-        published: 4000
-        host_ip: ${HOST_IP}
+      - '${HOST_IP}:4000:4000'
     volumes:
       - /data/teslamate/import:/opt/app/import
     cap_drop:
@@ -240,9 +238,7 @@ services:
       - DATABASE_NAME=teslamate
       - DATABASE_HOST=teslamate-database
     ports:
-      - target: 3000
-        published: 4001
-        host_ip: ${HOST_IP}
+      - '${HOST_IP}:4001:3000'
     volumes:
       - teslamate-grafana-data:/var/lib/grafana
 
