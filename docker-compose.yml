@@ -1,4 +1,4 @@
-version: '3.8'
+version: '2.1'
 
 services:
 
@@ -24,8 +24,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/nginx/acme:/etc/acme.sh
-      - /data/nginx/html:/usr/share/nginx/html
-      - /data/nginx/certs:/etc/nginx/certs
+    volumes_from:
+      - nginx
 
   mariadb:
     image: mariadb:10.5
