@@ -192,15 +192,6 @@ services:
     privileged: true
     network_mode: host
 
-  adguard:
-    image: adguard/adguardhome
-    container_name: adguard
-    restart: unless-stopped
-    volumes:
-      - /data/adguard/work:/opt/adguardhome/work
-      - /data/adguard/conf:/opt/adguardhome/conf
-    network_mode: host
-
   teslamate:
     container_name: teslamate
     image: teslamate/teslamate:latest
@@ -251,28 +242,5 @@ services:
     volumes:
       - teslamate-grafana-data:/var/lib/grafana
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    restart: unless-stopped
-    ports:
-      - 192.168.178.103:11434:11434
-    volumes:
-      - ollama-data:/root/.ollama
-    environment:
-      - OLLAMA_KEEP_ALIVE=5m
- 
-  openwebui:
-    image: ghcr.io/open-webui/open-webui:latest
-    container_name: openwebui
-    restart: unless-stopped
-    ports:
-      - 192.168.178.103:4002:8080
-    environment:
-      - OLLAMA_BASE_URL=http://ollama:11434
-    depends_on:
-      - ollama
-
 volumes:
   teslamate-grafana-data:
-  ollama-data:
