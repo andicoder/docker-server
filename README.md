@@ -1,6 +1,6 @@
 # Docker Server Stack
 
-A comprehensive Docker Compose setup for self-hosted services including Nextcloud, Paperless-ngx, Bitwarden, Home Assistant, and more.
+A comprehensive Docker Compose setup for self-hosted services including Nextcloud, Paperless-ngx, Bitwarden, Home Assistant, Teslamate, and more.
 
 ## 🚀 Services Included
 
@@ -10,6 +10,7 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
 - **Let's Encrypt Companion** - Automatic SSL certificate generation and renewal
 - **MariaDB** - Database server for various applications
 - **Redis** - Caching and session storage
+ - **PostgreSQL** - Database server for Teslamate
 
 ### File & Document Management
 
@@ -21,11 +22,15 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
 ### Security & Privacy
 
 - **Bitwarden** - Password manager and secure vault
-- **AdGuard Home** - Network-wide ad blocking and DNS filtering
 
 ### Home Automation
 
 - **Home Assistant** - Open-source home automation platform
+
+### Vehicle Telemetry
+
+- **Teslamate** - Data logger and visualizer for Tesla vehicles
+- **Grafana (Teslamate)** - Prebuilt dashboards for Teslamate
 
 ## 📋 Prerequisites
 
@@ -33,7 +38,7 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
 - Domain names configured for your services
 - Proper DNS setup pointing to your server
 - Sufficient storage space (recommended: 100GB+)
-- WireGuard VPN setup for internal services (Home Assistant, AdGuard Home)
+ - Optional: MQTT broker available for Teslamate integrations
 
 ## 🛠️ Installation
 
@@ -84,16 +89,29 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
    PAPERLESS_CONSUMER_ENABLE_BARCODES=true
    PAPERLESS_CONSUMER_BARCODE_SCANNER=ZXING
 
+   # Teslamate Configuration
+   TESLAMATE_ENCRYPTION_KEY=your_key
+   TESLAMATE_DATABASE_PASS=your_teslamate_db_password_here
+   MQTT_HOST=
+   MQTT_USERNAME=
+   MQTT_PASSWORD=
+
+   # Host Configuration
+   # IP address of the host to bind Teslamate and Grafana to (LAN IP)
+   HOST_IP=192.168.1.100
+
    # Admin Configuration
    ADMIN_EMAIL=admin@your-domain.com
    ```
 
-3. **Create required directories**
+3. **Create base data directory**
 
    ```bash
-   sudo mkdir -p /data/{nginx,nextcloud,mysql,bitwarden,paperless,homeassistant,adguard}
+   sudo mkdir -p /data
    sudo chown -R $USER:$USER /data
    ```
+
+   Docker will create all required service subdirectories on first run.
 
 4. **Start the services**
 
@@ -105,11 +123,12 @@ A comprehensive Docker Compose setup for self-hosted services including Nextclou
 
 ### Environment Variables
 The project includes an `env.template` file with all necessary environment variables. This template:
-- Contains all required variables for all services
+- Contains all required variables for all services (Nextcloud, Bitwarden, Paperless-ngx, Home Assistant, Teslamate)
 - Includes security best practices (placeholder passwords)
 - Provides German language support for Paperless
 - Includes Paperless OCR and consumer settings
 - Has proper UID/GID mapping for file permissions
+- Includes Teslamate settings (encryption key, PostgreSQL password, optional MQTT)
 
 ### MariaDB Configuration
 
@@ -133,6 +152,13 @@ The MariaDB service uses a custom configuration file located in `mariadb-config/
 - Integration with Gotenberg for PDF conversion
 - Tika for content extraction
 
+### Teslamate Configuration
+
+- Uses a dedicated PostgreSQL database
+- Exposes the Teslamate web UI on port 4000 (bound to host IP)
+- Grafana dashboards available on port 4001
+- Optional MQTT integration via environment variables
+
 ## 🌐 Accessing Services
 
 Once the services are running, you can access them at:
@@ -140,20 +166,23 @@ Once the services are running, you can access them at:
 - **Nextcloud**: `https://your-nextcloud-domain.com`
 - **Bitwarden**: `https://your-bitwarden-domain.com`
 - **Paperless**: `https://your-paperless-domain.com`
-- **Home Assistant**: `http://your-server-ip:8123` *(Internal WireGuard network only)*
-- **AdGuard Home**: `http://your-server-ip:3000` *(Internal WireGuard network only)*
+- **Home Assistant**: `http://${HOST_IP}:8123`
+- **Teslamate**: `http://${HOST_IP}:4000`
+- **Grafana (Teslamate)**: `http://${HOST_IP}:4001`
 
 ## 📁 Data Persistence
 
-All data is persisted in the `/data` directory:
+All data is persisted in the `/data` directory or named volumes:
 
 - `/data/nextcloud` - Nextcloud files and configuration
 - `/data/mysql` - MariaDB database files
 - `/data/bitwarden` - Bitwarden data
 - `/data/paperless` - Paperless documents and configuration
 - `/data/homeassistant` - Home Assistant configuration
-- `/data/adguard` - AdGuard Home configuration
 - `/data/nginx` - Nginx configuration and SSL certificates
+ - `/data/teslamate` - Teslamate import folder
+ - `/data/teslamate-postgres` - Teslamate PostgreSQL data
+ - `teslamate-grafana-data` (Docker named volume) - Grafana data
 
 ## 🔒 Security Considerations
 
@@ -163,15 +192,14 @@ All data is persisted in the `/data` directory:
 4. **Monitor logs** for any suspicious activity
 5. **Backup your data** regularly
 6. **Use firewall rules** to restrict access if needed
-7. **Home Assistant and AdGuard Home are protected by UFW firewall** - only accessible from the internal WireGuard network
+7. **Expose only required ports on your host** (Teslamate 4000, Grafana 4001, Home Assistant 8123) and secure access as needed
 
 ## 🚨 Important Notes
 
-- AdGuard Home runs in host network mode for DNS functionality
 - Home Assistant runs in host network mode for device discovery
 - All services use automatic SSL certificate management via Let's Encrypt
-- **Home Assistant and AdGuard Home are only accessible from the internal WireGuard network**, secured by UFW firewall rules
-- The nginx proxy uses a custom template (`nginx.tmpl`) for configuration
+- The nginx proxy auto-discovers containers via Docker labels/environment and terminates TLS
+- Teslamate and Grafana are bound to the host IP on ports 4000 and 4001 by default
 
 ## 🔄 Maintenance
 
