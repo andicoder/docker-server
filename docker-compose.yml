@@ -127,8 +127,8 @@ services:
       - letsencrypt
       - mariadb
       - redis
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     volumes:
       - /data/paperless/data:/usr/src/paperless/data
       - /data/paperless/media:/usr/src/paperless/media
@@ -145,6 +145,7 @@ services:
       - PAPERLESS_DBPASS=${PAPERLESS_DBPASS}
       - PAPERLESS_DBPORT=${PAPERLESS_DBPORT}
       - VIRTUAL_HOST=${PAPERLESS_DOMAIN}
+      - VIRTUAL_PORT=8000
       - LETSENCRYPT_HOST=${PAPERLESS_DOMAIN}
       - LETSENCRYPT_EMAIL=${ADMIN_EMAIL}
       - LETSENCRYPT_TEST=false
@@ -191,11 +192,55 @@ services:
     privileged: true
     network_mode: host
 
-  adguard:
-    image: adguard/adguardhome
-    container_name: adguard
+  teslamate:
+    container_name: teslamate
+    image: teslamate/teslamate:latest
     restart: unless-stopped
+    depends_on:
+      - teslamate-database
+    environment:
+      - ENCRYPTION_KEY=${TESLAMATE_ENCRYPTION_KEY}
+      - DATABASE_USER=teslamate
+      - DATABASE_PASS=${TESLAMATE_DATABASE_PASS}
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=teslamate-database
+      - MQTT_HOST=${MQTT_HOST}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - TZ=Europe/Berlin
+    ports:
+      - ${HOST_IP}:4000:4000
     volumes:
-      - /data/adguard/work:/opt/adguardhome/work
-      - /data/adguard/conf:/opt/adguardhome/conf
-    network_mode: host
+      - /data/teslamate/import:/opt/app/import
+    cap_drop:
+      - all
+
+  teslamate-database:
+    container_name: teslamate-database
+    image: postgres:17-trixie
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=teslamate
+      - POSTGRES_PASSWORD=${TESLAMATE_DATABASE_PASS}
+      - POSTGRES_DB=teslamate
+    volumes:
+      - /data/teslamate-postgres/data:/var/lib/postgresql/data
+
+  teslamate-grafana:
+    container_name: teslamate-grafana
+    image: teslamate/grafana:latest
+    restart: unless-stopped
+    depends_on:
+      - teslamate-database
+    environment:
+      - DATABASE_USER=teslamate
+      - DATABASE_PASS=${TESLAMATE_DATABASE_PASS}
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=teslamate-database
+    ports:
+      - ${HOST_IP}:4001:3000
+    volumes:
+      - teslamate-grafana-data:/var/lib/grafana
+
+volumes:
+  teslamate-grafana-data:
